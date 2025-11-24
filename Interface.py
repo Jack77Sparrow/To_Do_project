@@ -1,4 +1,4 @@
-from tasks.task import Task
+from tasks.task import Task, TimeFormating
 from tasks.manager import CMDTaskManager
 from datetime import datetime
 
@@ -15,9 +15,15 @@ class CMDInterface:
 
         description = input("Введіть опис: ")
         due_time = input("Введіть час в D.M.Y форматі: ")
+        
+        try:
+            due_to = TimeFormating(due_time)
+        except ValueError as e:
+            print(e)
+            return
         priority = input("Введіть пріорітет таски: ")
         task = Task(
-            title=title, description=description, due_to=due_time, priority=priority
+            title=title, description=description, due_to=due_to, priority=priority
         )
         
         self.manager.add_task(task)

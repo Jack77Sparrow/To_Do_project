@@ -1,7 +1,7 @@
 
 from abc import ABC, abstractmethod
 from typing import List, Dict
-from tasks.task import Task
+from tasks.task import Task, TimeFormating
 
 class TaskManager(ABC):
     @abstractmethod
@@ -36,11 +36,27 @@ class CMDTaskManager(TaskManager):
 
     def show_tasks(self):
         formating = ""
+        W = 20
         for task in self.tasks:
             created = getattr(task, 'created_at', 'N/A')
 
             last_update = getattr(task, 'last_updated', created)
-            formating += f"Title: {task.title} Description: {task.description} Date: {task.due_to} Status: {task.status} Priority: {task.priority} Created at: {created} Last updated: {last_update}\n"
+            # Якщо це TimeFormating → беремо нормальну дату
+            if isinstance(task.due_to, TimeFormating):
+                due_date = task.due_to.time
+            else:
+                # старі задачі, де due_to просто строка
+                due_date = task.due_to
+
+            formating += (
+            f"{task.title[:W]:^{W}}|"
+            f"{task.description[:W]:^{W}}|"
+            f"{due_date[:W]:^{W}}|"
+            f"{task.status[:W]:^{W}}|"
+            f"{task.priority[:W]:^{W}}|"
+            f"{created[:W]:^{W}}|"
+            f"{last_update[:W]:^{W}}\n"
+        )
 
         return formating
 
@@ -55,16 +71,19 @@ class CMDTaskManager(TaskManager):
                     return f"Видалено {title} з нотаток"
 
     def sorting_by_priority(self, priority):
-        
+        PRIORITY_ORDER = {
+    'hight': 3,
+    'medium': 2,
+    'low': 1
+}
         sorting_type = True if priority == 'high' else False
         
-        sorted_tasks = sorted(self.tasks, key=lambda t: t.priority, reverse=sorting_type)
+        sorted_tasks = sorted(self.tasks, key=lambda t: PRIORITY_ORDER[t.priority], reverse=sorting_type)
         self.tasks = sorted_tasks
         formating = ''
         for task in sorted_tasks:
-            formating += f"{task.title}\n"
-        print(formating)
-        return sorted_tasks
+            formating += f"{task.title}\t{task.priority}\n"
+        return formating
     
     def __str__(self):
         task_names = ""

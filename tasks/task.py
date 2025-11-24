@@ -7,14 +7,20 @@ from typing import List, Dict
 
 class TimeFormating:
     def __init__(self, time):
-        temp = datetime.strptime(time, "%d.%m.%Y")
-        self.time = datetime.strftime(temp, "%d/%m/%Y")
+        self.datetime = datetime.strptime(time, "%d.%m.%Y")
+        if self.datetime < datetime.now():
+            raise ValueError("Не можна задавати дату минулим числом")
+        self.time = datetime.strftime(self.datetime, "%d/%m/%Y")
 
 
 class Task:
     def __init__(
         self, title, description, due_to: TimeFormating, priority, status="pending", created_at=None
     ):
+        if isinstance(due_to, str):
+            due_to = TimeFormating(due_to)
+
+        
         self.title = title
         self.description = description
         self.due_to = due_to
