@@ -1,12 +1,27 @@
 from tasks.task import Task, TimeFormating
 from tasks.manager import CMDTaskManager
 from datetime import datetime
-
+import os
 
 class CMDInterface:
     def __init__(self, manager: CMDTaskManager):
         self.manager = manager
 
+
+    def help_cmd(self):
+        commands = {
+            "add_task": "Додати нове завдання",
+            "remove_task": "Видалити існуюче завдання",
+            "show_tasks": "Показати всі завдання",
+            "time_left": "Показати скільки часу залишилось до дедлайну",
+            "update_task": "Оновити інформацію про завдання",
+            "sort_tasks": "Відсортувати завдання за пріоритетом або датою"
+        }
+
+        print("\n=== ДОСТУПНІ КОМАНДИ ===\n")
+        for cmd, desc in commands.items():
+            print(f"{cmd:<15} - {desc}")
+        print("\nЩоб виконати команду, введіть її назву.")
     def add_task(self):
         title = input("Введіть назву: ")
         if any(title == item.title for item in self.manager.tasks):
@@ -69,7 +84,7 @@ class CMDInterface:
             finded_task.update_description(new_description)
             print("Опис оновлено")
             new_value = new_description
-        elif field == "due_time":
+        elif field == "due_to":
             new_time = input("Оновлений час здачі ")
             finded_task.update_dueto(new_time)
             print("Час оновлено")
@@ -93,7 +108,7 @@ class CMDInterface:
         finded_task.history.append(
             {
                 "field": field,
-                "old": old_value,
+                "old": old_value.time,
                 "new": new_value,
                 "changed_at": datetime.now().strftime("%d/%m/%Y %H:%M"),
             }
@@ -102,8 +117,23 @@ class CMDInterface:
             {
                 "task": finded_task.title,
                 "field": field,
-                "old": old_value,
+                "old": old_value.time,
                 "new": new_value,
                 "changed_at": datetime.now().strftime("%d/%m/%Y %H:%M"),
             }
         )
+    
+    def clear_data(self, filename=os.path.join(os.path.dirname(__file__), "data/data.pkl")):
+        if not os.path.exists(filename):
+            return f"Не вірний шлях до файлу"
+        
+        print("Ви впевнені що хочите видалити данні?")
+        Y_N = input("Y/N: ")
+        if Y_N in ['Y', 'y']:
+            self.manager.tasks = []
+            os.remove(filename)
+        elif Y_N in ['N', 'n']:
+            return
+            
+        
+        

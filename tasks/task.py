@@ -12,6 +12,8 @@ class TimeFormating:
             raise ValueError("Не можна задавати дату минулим числом")
         self.time = datetime.strftime(self.datetime, "%d/%m/%Y")
 
+    def to_dict(self):
+        return self.datetime
 
 class Task:
     def __init__(
@@ -19,7 +21,6 @@ class Task:
     ):
         if isinstance(due_to, str):
             due_to = TimeFormating(due_to)
-
         
         self.title = title
         self.description = description
@@ -45,7 +46,7 @@ class Task:
 
     def get_time_left(self):
         time_now = datetime.now()
-        end_time = datetime.strptime(self.due_to, "%d.%m.%Y")
+        end_time = datetime.strptime(self.due_to.time, "%d/%m/%Y")
         time_left = end_time - time_now
         days = time_left.days
         hours = time_left.seconds // 3600
