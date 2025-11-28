@@ -62,17 +62,14 @@ class CMDTaskManager(TaskManager):
 
     def remove_task(self, title: str):
         task_obj = self.find_task(title)
-        if task_obj not in self.tasks:
-            return f"{title} немає в тасках"
-        else:
-            for task in self.tasks:
-                if title == task.title:
-                    self.tasks.remove(task_obj)
-                    return f"Видалено {title} з нотаток"
+        if not task_obj:
+            return f"Задачу '{title}' не знайдено."
+        self.tasks.remove(task_obj)
+        return f"Видалено '{title}'"
 
     def sorting_by_priority(self, priority):
         PRIORITY_ORDER = {
-    'hight': 3,
+    'high': 3,
     'medium': 2,
     'low': 1
 }

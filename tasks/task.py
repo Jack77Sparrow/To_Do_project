@@ -13,7 +13,7 @@ class TimeFormating:
         self.time = datetime.strftime(self.datetime, "%d/%m/%Y")
 
     def to_dict(self):
-        return self.datetime
+        return self.time
 
 class Task:
     def __init__(

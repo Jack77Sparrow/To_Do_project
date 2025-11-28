@@ -64,13 +64,13 @@ class CMDInterface:
     def update_task(self):
         updated_task = input("Введіть таску яку ви хочите оновити: ")
         finded_task = self.manager.find_task(updated_task)
-        finded_task.last_updated = datetime.now().strftime("%d/%m/%Y %H:%M")
+        
         if not finded_task:
             print(f"Такої таски не існує")
             return
-
+        finded_task.last_updated = datetime.now().strftime("%d/%m/%Y %H:%M")
         field = input(
-            "Що ви хочите оновити title/description/due_time/priority/status? "
+            "Що ви хочите оновити title/description/due_to/priority/status? "
         )
         old_value = getattr(finded_task, field)
         new_value = "N/A"
@@ -89,6 +89,7 @@ class CMDInterface:
             finded_task.update_dueto(new_time)
             print("Час оновлено")
             new_value = new_time
+            old_value = old_value.time
         elif field == "priority":
             priority_map = {1: "hight", 2: "medium", 3: "low"}
             new_priority_num = int(
@@ -108,7 +109,7 @@ class CMDInterface:
         finded_task.history.append(
             {
                 "field": field,
-                "old": old_value.time,
+                "old": old_value,
                 "new": new_value,
                 "changed_at": datetime.now().strftime("%d/%m/%Y %H:%M"),
             }
@@ -117,7 +118,7 @@ class CMDInterface:
             {
                 "task": finded_task.title,
                 "field": field,
-                "old": old_value.time,
+                "old": old_value,
                 "new": new_value,
                 "changed_at": datetime.now().strftime("%d/%m/%Y %H:%M"),
             }
