@@ -20,6 +20,16 @@ class TaskManager(ABC):
     def remove_task(self):
         pass
 
+class GUITaskManager(TaskManager):
+    def __init__(self, tasks=None):
+        self.tasks: List[Task] = tasks or []
+        self.history: List[Dict] = []
+
+
+    def add_task(self, task):
+        pass
+        
+
 
 class CMDTaskManager(TaskManager):
     def __init__(self, tasks=None):

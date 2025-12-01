@@ -3,6 +3,8 @@ from tasks.manager import CMDTaskManager
 from datetime import datetime
 import os
 
+
+
 class CMDInterface:
     def __init__(self, manager: CMDTaskManager):
         self.manager = manager
@@ -124,8 +126,9 @@ class CMDInterface:
             }
         )
     
-    def clear_data(self, filename=os.path.join(os.path.dirname(__file__), "data/data.pkl")):
+    def clear_data(self, filename='/Users/drake/Documents/Projects/To_Do_List/data/data.pkl'):
         if not os.path.exists(filename):
+            print(filename)
             return f"Не вірний шлях до файлу"
         
         print("Ви впевнені що хочите видалити данні?")
@@ -136,5 +139,4 @@ class CMDInterface:
         elif Y_N in ['N', 'n']:
             return
             
-        
         
