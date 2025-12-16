@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ML Models Analysis</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/styles.css" />
+
+    <style>
+      .dashboard {
+        max-width: 1100px;
+        margin: 40px auto;
+        padding: 20px;
+      }
+
+      .metrics-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        font-size: 14px;
+      }
+
+      .metrics-table th,
+      .metrics-table td {
+        padding: 12px 14px;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: center;
+      }
+
+      .metrics-table th {
+        background: #f9fafb;
+        font-weight: 600;
+        color: #374151;
+      }
+
+      .metrics-table tr:hover {
+        background: #f3f4f6;
+      }
+
+      .metrics-table td:first-child {
+        font-weight: 500;
+        text-align: left;
+      }
+
+      .best-model {
+        margin-top: 16px;
+        padding: 14px 18px;
+        background: #ecfeff;
+        border-left: 4px solid #06b6d4;
+        font-weight: 500;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="dashboard">
+      <h1>Machine Learning Models Comparison</h1>
+
+      <p>
+        This dashboard shows a comparison of different machine learning models
+        used for task difficulty classification based on real evaluation
+        metrics.
+      </p>
+
+      <canvas id="modelChartDetailed" height="120"></canvas>
+
+      <div id="bestModelBox" class="best-model"></div>
+
+      <h3>Model Performance Metrics</h3>
+
+      <table class="metrics-table">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Accuracy</th>
+            <th>Precision</th>
+            <th>Recall</th>
+            <th>F1-score</th>
+            <th>Train time (ms)</th>
+          </tr>
+        </thead>
+        <tbody id="metricsBody"></tbody>
+      </table>
+
+      <h3>Model Details</h3>
+      <ul>
+        <li><b>Naive Bayes</b> – fast baseline probabilistic model</li>
+        <li><b>Logistic Regression</b> – linear model with weighted features</li>
+        <li><b>Linear SVM</b> – margin-based classifier with best performance</li>
+      </ul>
+
+      <a href="/dashboard">← Back to dashboard</a>
+    </div>
+
+    <script>
+      let chartInstance = null;
+
+      fetch("/api/model-metrics")
+        .then((res) => res.json())
+        .then((data) => {
+          renderChart(data);
+          renderTable(data);
+          renderBestModel(data);
+        })
+        .catch((err) => {
+          console.error("Failed to load metrics", err);
+        });
+
+      function renderChart(data) {
+        const labels = Object.keys(data);
+        const accuracy = labels.map((m) => data[m].accuracy);
+
+        const ctx = document.getElementById("modelChartDetailed");
+
+        if (chartInstance) chartInstance.destroy();
+
+        chartInstance = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: "Accuracy",
+                data: accuracy,
+                backgroundColor: ["#93c5fd", "#60a5fa", "#3b82f6"],
+              },
+            ],
+          },
+          options: {
+            scales: {
+              y: {
+                min: 0,
+                max: 1,
+              },
+            },
+          },
+        });
+      }
+
+      function renderTable(data) {
+        const tbody = document.getElementById("metricsBody");
+        tbody.innerHTML = "";
+
+        Object.entries(data).forEach(([model, m]) => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${model}</td>
+              <td>${m.accuracy.toFixed(3)}</td>
+              <td>${m.precision.toFixed(3)}</td>
+              <td>${m.recall.toFixed(3)}</td>
+              <td>${m.f1.toFixed(3)}</td>
+              <td>${m.train_time_ms}</td>
+            </tr>
+          `;
+        });
+      }
+
+      function renderBestModel(data) {
+        const [bestName, bestMetrics] = Object.entries(data).sort(
+          (a, b) => b[1].f1 - a[1].f1
+        )[0];
+
+        document.getElementById("bestModelBox").innerText =
+          `Best model: ${bestName} (Macro F1-score = ${bestMetrics.f1.toFixed(
+            3
+          )})`;
+      }
+    </script>
+  </body>
+</html>

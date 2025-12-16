@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="static/tasks_styles.css?v=4" />
+    <title>Tasks</title>
+
+    <script>
+      let currentPage = 1;
+      let currentTaskId = null;
+      const limit = 15;
+
+      async function loadTasks(page = 1) {
+        currentPage = page;
+
+        const response = await fetch(
+          `http://127.0.0.1:8000/tasks?page=${page}&limit=${limit}`
+        );
+        const data = await response.json();
+
+        const list = document.getElementById("task-list");
+        list.innerHTML = "";
+
+        data.items.forEach((task) => {
+          const item = document.createElement("div");
+          item.className = "task-item";
+          item.onclick = () => loadTaskDetails(task.id);
+          const difficulty = task.difficulty
+            ? task.difficulty.toLowerCase()
+            : "";
+
+          item.innerHTML = `
+            <div class="task-left">
+              <img src="../static/images/icons/to-do.png" class="task-icon" />
+              <div class="task-title">${task.title}</div>
+            </div>
+            <div class="task-difficult ${difficulty}">
+              ${difficulty || "-"}
+            </div>
+            <div class="task-tag">${task.category || "-"}</div>
+          `;
+
+          list.appendChild(item);
+        });
+
+        renderPagination(data.total, data.page, data.limit);
+      }
+
+      function renderPagination(total, page, limit) {
+        const pages = Math.ceil(total / limit);
+        const container = document.getElementById("pagination");
+        container.innerHTML = "";
+
+        for (let i = 1; i <= pages; i++) {
+          const btn = document.createElement("button");
+          btn.innerText = i;
+          if (i === page) btn.classList.add("active");
+          btn.onclick = () => loadTasks(i);
+          container.appendChild(btn);
+        }
+      }
+
+      async function loadTaskDetails(id) {
+        currentTaskId = id;
+
+        const response = await fetch(`http://127.0.0.1:8000/tasks/${id}`);
+        const task = await response.json();
+        console.log(task.due_to);
+        document.getElementById("details-title").innerText = task.title;
+        document.getElementById("details-due").value = task.due_to || "";
+        document.getElementById("details-priority").value =
+          task.priority || "low";
+        document.getElementById("details-status").value =
+          task.status || "pending";
+        document.getElementById("details-desc").value = task.description || "";
+
+        document.getElementById("details-created").innerText =
+          task.created_at || "—";
+        document.getElementById("details-updated").innerText =
+          task.last_updated || "—";
+
+        toggleEdit(false);
+      }
+
+      function toggleEdit(enable) {
+        document
+          .querySelectorAll(
+            "#details-due, #details-priority, #details-status, #details-desc"
+          )
+          .forEach((el) => (el.disabled = !enable));
+
+        document
+          .getElementById("edit-actions")
+          .classList.toggle("hidden", !enable);
+
+        document.getElementById("edit-btn").classList.toggle("hidden", enable);
+      }
+
+      async function saveTask() {
+        const payload = {
+          due_to: document.getElementById("details-due").value,
+          priority: document.getElementById("details-priority").value,
+          status: document.getElementById("details-status").value,
+          description: document.getElementById("details-desc").value,
+        };
+
+        await fetch(`http://127.0.0.1:8000/tasks/${currentTaskId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        toggleEdit(false);
+        loadTaskDetails(currentTaskId);
+      }
+
+      window.onload = () => loadTasks();
+    </script>
+  </head>
+
+  <body>
+    <div class="main-page">
+      <!-- LEFT -->
+      <div class="left-page">
+        <div class="task-list" id="task-list"></div>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="right-page">
+        <!-- HEADER -->
+        <div class="card-header">
+          <h1 id="details-title">Select a task</h1>
+          <button id="edit-btn" class="edit-btn" onclick="toggleEdit(true)">
+            ✏️ Edit
+          </button>
+        </div>
+
+        <!-- INFO -->
+        <div class="task-info">
+          <div>
+            <div class="label">Due</div>
+            <input type="date" id="details-due" disabled />
+          </div>
+
+          <div>
+            <div class="label">Priority</div>
+            <select id="details-priority" disabled>
+              <option value="low">low</option>
+              <option value="medium">medium</option>
+              <option value="high">high</option>
+            </select>
+          </div>
+
+          <div>
+            <div class="label">Status</div>
+            <select id="details-status" disabled>
+              <option value="pending">pending</option>
+              <option value="in progress">in progress</option>
+              <option value="done">done</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="task-description">
+          <h3>Description</h3>
+          <textarea
+            id="details-desc"
+            rows="5"
+            placeholder="Write task details here..."
+            disabled
+          ></textarea>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="task-actions hidden" id="edit-actions">
+          <button class="btn-secondary" onclick="toggleEdit(false)">
+            Cancel
+          </button>
+          <button class="btn-primary" onclick="saveTask()">Save changes</button>
+        </div>
+
+        <!-- META -->
+        <div class="task-meta">
+          <div>
+            <span class="meta-label">Created:</span>
+            <span id="details-created">—</span>
+          </div>
+          <div>
+            <span class="meta-label">Last updated:</span>
+            <span id="details-updated">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="pagination" class="pagination"></div>
+  </body>
+</html>

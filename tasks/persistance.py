@@ -39,7 +39,6 @@ def load_from_json(filename=os.path.join(os.path.dirname(__file__), "..", "data/
         data = json.load(file)
         return data
     
-
 def database_save(tasks):
     try:
         conn = sqlite3.connect("data/tasks.db")
@@ -55,15 +54,20 @@ def database_save(tasks):
                 status TEXT NOT NULL,
                 created_at TEXT NOT NULL,
                 last_updated TEXT NOT NULL
-            )
+            );
         """)
 
+        # 🔥 Щоб не дублювало — очищаємо таблицю
+        cursor.execute("DELETE FROM tasks;")
+
         for t in tasks:
-            due_to = (
-                t.due_to.strftime("%Y-%m-%d %H:%M:%S")
-                if hasattr(t.due_to, "strftime")
-                else str(t.due_to.time)
-            )
+            # 🔥 Приводимо до нормального формату
+            if hasattr(t.due_to, "to_db"):
+                due_to = t.due_to.to_db()
+            elif hasattr(t.due_to, "strftime"):
+                due_to = t.due_to.strftime("%Y-%m-%d %H:%M:%S")
+            else:
+                due_to = str(t.due_to)
 
             cursor.execute("""
                 INSERT INTO tasks (title, description, due_to, priority, status, created_at, last_updated)
@@ -85,13 +89,3 @@ def database_save(tasks):
 
     finally:
         conn.close()
-
-        
-def clear_database():
-    conn = sqlite3.connect("data/tasks.db")
-    cursor = conn.cursor()
-
-    cursor.execute("""DROP TABLE tasks;""")
-
-    conn.commit()
-    conn.close()

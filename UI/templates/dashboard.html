@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="/static/styles.css" />
+
+    <style>
+      .dashboard {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 20px;
+        font-family: Inter, sans-serif;
+      }
+
+      .dashboard h1 {
+        margin-bottom: 30px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+        gap: 30px;
+      }
+
+      .card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      }
+
+      .card h3 {
+        margin-top: 0;
+        margin-bottom: 16px;
+        font-size: 18px;
+      }
+
+      .advice {
+        font-size: 16px;
+        line-height: 1.5;
+        background: #f9fafb;
+        padding: 16px;
+        border-radius: 12px;
+      }
+
+      .card-link {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .card.clickable {
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .card.clickable:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard">
+      <h1>📊 AI Productivity Dashboard</h1>
+
+      <div class="grid">
+        <!-- Difficulty -->
+        <a href="/dashboard/difficulty" class="card-link">
+          <div class="card clickable">
+            <h3>Task Difficulty Distribution</h3>
+            <canvas id="difficultyChart"></canvas>
+          </div>
+        </a>
+
+        <!-- Models -->
+        <a href="/dashboard/models" class="card-link">
+          <div class="card">
+            <h3>ML Models Comparison</h3>
+            <canvas id="modelChart"></canvas>
+          </div>
+        </a>
+
+        <!-- Advice -->
+        <a href="/dashboard/advice" class="card-link">
+          <div class="card">
+            <h3>AI Recommendation</h3>
+            <div class="advice" id="aiAdvice">Loading recommendation...</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <script>
+
+
+      const difficultyStats = {
+        easy: 42,
+        medium: 28,
+        hard: 15,
+      };
+
+      const modelScores = {
+        naive_bayes: 0.72,
+        logistic_regression: 0.81,
+        svm: 0.84,
+      };
+
+
+      new Chart(document.getElementById("difficultyChart"), {
+        type: "pie",
+        data: {
+          labels: ["Easy", "Medium", "Hard"],
+          datasets: [
+            {
+              data: [
+                difficultyStats.easy,
+                difficultyStats.medium,
+                difficultyStats.hard,
+              ],
+              backgroundColor: ["#4ade80", "#facc15", "#f87171"],
+            },
+          ],
+        },
+      });
+
+      // Models bar
+      new Chart(document.getElementById("modelChart"), {
+        type: "bar",
+        data: {
+          labels: ["Naive Bayes", "Logistic Regression", "SVM"],
+          datasets: [
+            {
+              label: "Accuracy",
+              data: [
+                modelScores.naive_bayes,
+                modelScores.logistic_regression,
+                modelScores.svm,
+              ],
+              backgroundColor: "#60a5fa",
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              min: 0,
+              max: 1,
+            },
+          },
+        },
+      });
+
+
+
+      const adviceBox = document.getElementById("aiAdvice");
+
+      if (difficultyStats.hard > 5) {
+        adviceBox.innerText =
+          "You have many hard tasks. Start with medium tasks to build momentum.";
+      } else {
+        adviceBox.innerText =
+          "Good balance of tasks. You can safely start with hard ones today.";
+      }
+    </script>
+  </body>
+</html>

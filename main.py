@@ -6,7 +6,7 @@ from UI.CLI_interface import CMDInterface
 from UI.GUI_interface import GUIInterface
 from tasks.manager import CMDTaskManager
 
-from tasks.persistance import load_from_pickle, save_to_pickle, save_to_json, load_from_json, database_save, clear_database
+from tasks.persistance import load_from_pickle, save_to_pickle, save_to_json, database_save
 
 
 
@@ -31,10 +31,12 @@ def main():
         "clear_data": ui.clear_data,
     }
     print("Введіть help для того щоб дізнатись на що спроможний бот")
-   
+
+
     while True:
         interface = input("Яким інтерфейсом ви хочете користуватись gui/cmd?: ")
         if interface in ["exit", "q", "quit"]:
+            database_save(task_manager.tasks)
             break
         elif interface == 'cmd':
             while True:
