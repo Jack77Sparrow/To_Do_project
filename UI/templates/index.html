@@ -72,7 +72,7 @@
           });
         });
 
-        loadTasks(); // стартове завантаження
+        showTodayTasks();
       });
 
       /* ================= HELPERS ================= */
@@ -85,24 +85,19 @@
         console.log("TASK:", task.due_to);
       }
 
-      /* ================= LOAD TASKS ================= */
-      async function loadTasks() {
-        const response = await fetch("/tasks/all");
-        allTasks = await response.json();
-        
-        // allTasks = data.items || [];
-        console.log(allTasks);
-        renderTodayTasks();
-      }
-
       /* ================= RENDER TODAY ================= */
-      function renderTodayTasks() {
+      async function renderTodayTasks() {
         const container = document.getElementById("today-task-list");
         if (!container) return;
 
         container.innerHTML = "";
 
-        const todayTasks = allTasks.filter((task) => isToday(task.due_to));
+        // const todayTasks = allTasks.filter((task) => isToday(task.due_to));
+        const todayTasksResponse = await fetch("tasks/today");
+        if (!todayTasksResponse.ok) {
+          container.innerHTML = "<p>Error loading today tasks</p>";
+        }
+        todayTasks = await todayTasksResponse.json();
         console.log(todayTasks);
         if (todayTasks.length === 0) {
           container.innerHTML = "<p>No tasks for today 🎉</p>";
@@ -203,32 +198,21 @@
             </div>
 
             <div class="quick-buttons">
-              <button class="custom-btn" type="button" onclick="openModal()">
-                <img src="/static/images/icons/add-document.png" height="22" />
-                <span>New Task</span>
+              <button class="custom-btn" type="button" id="record">
+                <img src="/static/images/icons/microphone.png" height="22" />
+
+                <span>Voice Helper</span>
               </button>
 
-              <div id="taskModal" class="modal">
-                <div class="modal-content">
-                  <h3>New Task</h3>
+              <button
+                class="custom-btn"
+                type="button"
+                onclick="window.location.href='/new_task'"
+              >
+                <img src="/static/images/icons/add-document.png" height="22" />
 
-                  <form method="POST" action="/add_task">
-                    <input
-                      type="text"
-                      name="title"
-                      placeholder="Task title"
-                      required
-                    />
-
-                    <div class="modal-actions">
-                      <button type="submit">Save</button>
-                      <button type="button" onclick="closeModal()">
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
+                <span>New Task</span>
+              </button>
 
               <form action="/add_project" method="POST">
                 <button class="custom-btn">
@@ -278,4 +262,33 @@
       </div>
     </div>
   </body>
+  <script>
+    let mediaRecorder;
+    let audioChunks = [];
+
+    document.getElementById("record").onclick = async () => {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks = [];
+
+      mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
+
+      mediaRecorder.onstop = async () => {
+        const blob = new Blob(audioChunks, { type: "audio/wav" });
+        const formData = new FormData();
+        formData.append("file", blob, "voice.wav");
+
+        await fetch("/voice", {
+          method: "POST",
+          body: formData,
+        });
+      };
+
+      mediaRecorder.start();
+
+      setTimeout(() => mediaRecorder.stop(), 10000); // 5 сек
+    };
+  </script>
 </html>

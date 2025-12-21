@@ -1,43 +1,76 @@
 from typing import Union
-from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
-from fastapi import FastAPI, Query
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse, FileResponse
+from fastapi import FastAPI, Query, HTTPException
 from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
-from fastapi import Form
+from fastapi import Form, File, UploadFile
 import json
 import joblib
 from datetime import datetime
 from datetime import date
+import asyncio
+from repository.tasks import load_tasks, save_tasks
+
 
 model = joblib.load("model/task_classifier.pkl")
 difficulty_model = joblib.load("model/best_difficulty_model.pkl")
 
 
-DATA_PATH = Path("data/data.json")
 
 
-def load_tasks():
-    if not DATA_PATH.exists():
-        return []
+async def formating_task(title,
+    description,
+    due_to,
+    priority,
+    status):
+    tasks = await load_tasks()
+    print(due_to, date.today().isoformat())
+    due_date = datetime.strptime(due_to, "%Y-%m-%d").date()
+    if due_date < date.today():
+        print("Task can't be in the past")
+        raise HTTPException(
+            status_code=400,
+            detail="Task can't be in the past"
+        )
+        
+    for task in tasks:
+        if title == task['title']:
+            raise HTTPException(
+                status_code=409,
+                detail="Task already exists"
+            )
+   
+    new_id = max([t.get("id", 0) for t in tasks], default=0) + 1
 
-    with open(DATA_PATH, "r", encoding="utf-8") as f:
-        tasks = json.load(f)
+    text = f"{title} {description}"
+    predicted_category = model.predict([text])[0]
 
-    # 👇 автоматично додаємо id, якщо його нема
-    for index, task in enumerate(tasks, start=1):
-        if "id" not in task:
-            task["id"] = index
-
+    difficulty = difficulty_model.predict([text])[0]
+    new_task = {
+        "id": new_id,
+        "title": title,
+        "description": description,
+        "category": predicted_category,
+        "difficulty" : difficulty,
+        "priority": priority,
+        "status": status,
+        "created_at": datetime.now().strftime("%d/%m/%Y %H:%M"),
+        "last_updated": datetime.now().strftime("%d/%m/%Y %H:%M"),
+        "history": [],
+        "due_to": due_to
+    }
+    tasks.append(new_task)
     return tasks
 
-def save_tasks(tasks):
-    with open(DATA_PATH, "w", encoding="utf-8") as f:
-        json.dump(tasks, f, ensure_ascii=False, indent=2)
 
 
-
-
+def get_today(tasks: list[dict]) -> list[dict]:
+    """
+    get todays tasks
+    """
+    today = date.today().isoformat()
+    return [t for t in tasks if t.get("due_to") == today]
 
 
 app = FastAPI()
@@ -51,24 +84,75 @@ class TaskUpdate(BaseModel):
     description: str | None = None
 
 
-class Item(BaseModel):
-    name: str
-    price: float
-    is_offer: Union[bool, None] = None
+class Task(BaseModel):
+    id: int
+    title: str
+    description: str = ""
+    category: str
+    difficulty: str
+    priority: str
+    status: str
+    due_to: str
+    created_at: str
+    last_updated: str
 
 
+
+
+
+# Головна сторінка сайту
 @app.get("/")
 def read_root():
-    with open('UI/templates/index.html', 'rb') as file:
-        return HTMLResponse(file.read(), status_code=200)
+    return FileResponse("UI/templates/index.html")
 
 
+
+@app.get("/new_task")
+def add_task():
+    """Show page for creating task"""
+    return FileResponse("UI/templates/new_task.html")
+
+
+# show page with all tasks
+@app.get("/tasks-page")
+def tasks_page():
+    return FileResponse("UI/templates/tasks.html")
+
+
+@app.get("/dashboard")
+def dashboard_page():
+    """Shows dashboard page"""
+    return FileResponse("UI/templates/dashboard.html")
+
+
+
+# DASHBOARD PAGES
+@app.get("/dashboard/difficulty")
+def dashboard_difficulty():
+    """Dashboard difficulty page"""
+    return FileResponse("UI/templates/dashboards/dashboard_difficulty.html")
+
+@app.get("/dashboard/models")
+def dashboard_models():
+    """Dashboard models-info page"""
+    return FileResponse("UI/templates/dashboards/dashboard_models.html")
+
+@app.get("/dashboard/advice")
+def dashboard_advice():
+    """Dashboard advice page"""
+    return FileResponse("UI/templates/dashboards/dashboard_advice.html")
+
+
+
+
+
+# Сторінка з усіма тасками
 @app.get("/tasks")
-def get_tasks(
+async def get_tasks(
     page: int = Query(1, ge=1),
     limit: int = Query(15, ge=1, le=100)
 ):
-    tasks = load_tasks()
+    tasks = await load_tasks()
 
     start = (page - 1) * limit
     end = start + limit
@@ -79,28 +163,35 @@ def get_tasks(
         "page": page,
         "limit": limit
     }
+
+
+# to get all today tasks
 @app.get("/tasks/today")
-def get_today_tasks():
-    tasks = load_tasks()
-    today = date.today().isoformat()
-    return [t for t in tasks if t.get("due_to") == today]
+async def get_today_tasks():
+    tasks = await load_tasks()
+    return get_today(tasks)
+    
 
+
+# to get all tasks
 @app.get("/tasks/all")
-def get_all_tasks():
-    return load_tasks()
+async def get_all_tasks():
+    return await load_tasks()
 
+
+# to get task by id
 @app.get("/tasks/{task_id}")
-def get_task(task_id: int):
-    tasks = load_tasks()
+async def get_task(task_id: int):
+    tasks = await load_tasks()
     for task in tasks:
         if task["id"] == task_id:
             return task
     return {"error": "Task not found"}
+
+# update task and change last_update to "CurrentTime"
 @app.put("/tasks/{task_id}")
-
-
-def update_task(task_id: int, data: TaskUpdate):
-    tasks = load_tasks()
+async def update_task(task_id: int, data: TaskUpdate):
+    tasks = await load_tasks()
 
     for task in tasks:
         if task["id"] == task_id:
@@ -116,65 +207,48 @@ def update_task(task_id: int, data: TaskUpdate):
             if data.description is not None:
                 task["description"] = data.description
 
-            task["last_updated"] = "now"  # пізніше зробимо datetime
+            task["last_updated"] = "now"  
 
-            save_tasks(tasks)
+            await save_tasks(tasks)
             return task
 
     return {"error": "Task not found"}
 
 
-@app.get("/tasks-page")
-def tasks_page():
-    
-    with open("UI/templates/tasks.html", 'rb') as file:
-        return HTMLResponse(file.read(), status_code=200)
 
+
+# post request to add task 
 @app.post("/add_task")
-def add_task(
+async def add_task(
     title: str = Form(...),
-    description: str = Form("")
+    description: str = Form(""),
+    due_to: str = Form(""),
+    priority: str = Form(""),
+    status: str = Form(""),
 ):
-    tasks = load_tasks()
-
-    new_id = max([t.get("id", 0) for t in tasks], default=0) + 1
-
+    new_tasks = await formating_task(title, description, due_to, priority, status)
     text = f"{title} {description}"
     predicted_category = model.predict([text])[0]
-    # text = f"{title} {description}"
-
-    difficulty = difficulty_model.predict([text])[0]
-    new_task = {
-        "id": new_id,
-        "title": title,
-        "description": description,
-        "category": predicted_category,  # 👈 ML тут
-        "difficulty" : difficulty,
-        "priority": "medium",
-        "status": "pending",
-        "created_at": datetime.now().strftime("%d/%m/%Y %H:%M"),
-        "last_updated": datetime.now().strftime("%d/%m/%Y %H:%M"),
-        "history": []
-    }
-
-    tasks.append(new_task)
-    save_tasks(tasks)
+    
+    await save_tasks(new_tasks)
 
     return {"status": "ok", "category": predicted_category}
 
+
+# classify all tasks using different models
 @app.post("/classify_all_tasks")
-def classify_all_tasks():
-    tasks = load_tasks()
+async def classify_all_tasks():
+    tasks = await load_tasks()
 
     for task in tasks:
         if "category" not in task:
             text = f"{task['title']} {task.get('description', '')}"
             task["category"] = model.predict([text])[0]
-        text = f"{task['title']} {task.get('description', '')}"
 
+        text = f"{task['title']} {task.get('description', '')}"
         task["difficulty"] = difficulty_model.predict([text])[0]
 
-    save_tasks(tasks)
+    await save_tasks(tasks)
     return {"status": "classified", "count": len(tasks)}
 
 
@@ -183,28 +257,7 @@ def add_project():
     return RedirectResponse("/tasks", status_code=303)
 
 
-@app.get("/dashboard")
-def dashboard_page():
-    with open("UI/templates/dashboard.html", "rb") as f:
-        return HTMLResponse(f.read(), status_code=200)
 
-@app.get("/dashboard/difficulty")
-def dashboard_difficulty():
-    return HTMLResponse(
-        open("UI/templates/dashboards/dashboard_difficulty.html", "rb").read()
-    )
-
-@app.get("/dashboard/models")
-def dashboard_models():
-    return HTMLResponse(
-        open("UI/templates/dashboards/dashboard_models.html", "rb").read()
-    )
-
-@app.get("/dashboard/advice")
-def dashboard_advice():
-    return HTMLResponse(
-        open("UI/templates/dashboards/dashboard_advice.html", "rb").read()
-    )
 
 
 @app.get("/api/model-metrics")
@@ -214,22 +267,21 @@ def get_model_metrics():
     return JSONResponse(content=data)
 
 
-
-
-
 from fastapi import Body
 
 @app.post("/tasks")
-def create_task(task: dict = Body(...)):
-    tasks = load_tasks()
+async def create_task(task: dict = Body(...)):
+    tasks = await load_tasks()
     task["id"] = max(t["id"] for t in tasks) + 1
     tasks.append(task)
-    save_tasks(tasks)
+    await save_tasks(tasks)
     return task
 
 @app.delete("/tasks/{task_id}")
-def delete_task(task_id: int):
-    tasks = load_tasks()
+async def delete_task(task_id: int):
+    tasks = await load_tasks()
     tasks = [t for t in tasks if t["id"] != task_id]
-    save_tasks(tasks)
+    await save_tasks(tasks)
     return {"status": "deleted"}
+
+
