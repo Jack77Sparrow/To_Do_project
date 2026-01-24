@@ -10,13 +10,30 @@
       let currentPage = 1;
       let currentTaskId = null;
       const limit = 15;
+      let filters = {
+        status: null,
+        priority: null,
+        difficulty: null,
+      };
+
 
       async function loadTasks(page = 1) {
         currentPage = page;
 
-        const response = await fetch(
-          `http://127.0.0.1:8000/tasks?page=${page}&limit=${limit}`
-        );
+        const params = new URLSearchParams({
+          page,
+          limit,
+        });
+
+        if (filters.status) params.append("status", filters.status);
+        if (filters.priority) params.append("priority", filters.priority);
+        if (filters.difficulty) params.append("difficulty", filters.difficulty);
+
+        const url = `http://127.0.0.1:8000/tasks?${params.toString()}`;
+
+        console.log("FETCH:", url);
+
+        const response = await fetch(url);
         const data = await response.json();
 
         const list = document.getElementById("task-list");
@@ -45,10 +62,27 @@
         });
 
         renderPagination(data.total, data.page, data.limit);
+        console.log(data.total);
       }
+
+      function startTimer(){
+        if (!currentTaskId) return;
+        fetch(`http://127.0.0.1:8000/tasks/${currentTaskId}/start`, {
+          method: "POST"
+        })
+      }
+
+      function stopTimer(){
+        if (!currentTaskId) return;
+        const response = fetch(`http://127.0.0.1:8000/tasks/${currentTaskId}/stop`, {
+          method: "POST"
+        })
+      }
+
 
       function renderPagination(total, page, limit) {
         const pages = Math.ceil(total / limit);
+        console.log(pages);
         const container = document.getElementById("pagination");
         container.innerHTML = "";
 
@@ -84,17 +118,43 @@
       }
 
       function toggleEdit(enable) {
+        const editBtn = document.getElementById("edit-btn");
+        const editActions = document.getElementById("edit-actions");
+
         document
           .querySelectorAll(
             "#details-due, #details-priority, #details-status, #details-desc"
           )
           .forEach((el) => (el.disabled = !enable));
 
-        document
-          .getElementById("edit-actions")
-          .classList.toggle("hidden", !enable);
+        
+          
 
-        document.getElementById("edit-btn").classList.toggle("hidden", enable);
+        if (editBtn){
+          editBtn.classList.toggle("hidden", enable);
+        }
+        
+        if (editActions){
+          editActions.classList.toggle("hidden", !enable);
+        }
+
+      }
+
+      async function deleteTask() {
+        console.log(currentTaskId);
+        const response = await fetch(
+          `http://127.0.0.1:8000/tasks/${currentTaskId}`,
+          {
+            method: "DELETE",
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to delete task");
+        }
+
+        currentTaskId = null;
+
+        await loadTasks();
       }
 
       async function saveTask() {
@@ -106,7 +166,7 @@
         };
 
         await fetch(`http://127.0.0.1:8000/tasks/${currentTaskId}`, {
-          method: "PUT",
+          method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
@@ -114,29 +174,126 @@
         toggleEdit(false);
         loadTaskDetails(currentTaskId);
       }
+      function renderTasks(tasks) {
+        const container = document.getElementById("tasks");
+        container.innerHTML = "";
+
+        tasks.forEach((task) => {
+          const div = document.createElement("div");
+          div.textContent = task.title;
+          container.appendChild(div);
+        });
+      }
 
       window.onload = () => loadTasks();
+
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".difficulty-tabs .tab").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            document
+              .querySelectorAll(".difficulty-tabs .tab")
+              .forEach((b) => b.classList.remove("active"));
+
+            btn.classList.add("active");
+
+            filters.difficulty = btn.dataset.value || null;
+
+            loadTasks(1);
+          });
+        });
+      });
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".priority-tabs .tab").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            document
+              .querySelectorAll(".priority-tabs .tab")
+              .forEach((b) => b.classList.remove("active"));
+
+            btn.classList.add("active");
+
+            filters.priority = btn.dataset.value || null;
+
+            loadTasks(1);
+          });
+        });
+      });
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".status-tabs .tab").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            document
+              .querySelectorAll(".status-tabs .tab")
+              .forEach((b) => b.classList.remove("active"));
+
+            btn.classList.add("active");
+
+            filters.status = btn.dataset.value || null;
+
+            loadTasks(1);
+          });
+        });
+      });
     </script>
   </head>
 
   <body>
-    <div class="main-page">
-      <!-- LEFT -->
-      <div class="left-page">
-        <div class="task-list" id="task-list"></div>
-      </div>
+    <div class="page-grid">
+      <!-- ===== FILTERS ===== -->
+      <aside class="filters">
+        <h3 class="filters-title">Filters</h3>
 
-      <!-- RIGHT -->
-      <div class="right-page">
-        <!-- HEADER -->
-        <div class="card-header">
-          <h1 id="details-title">Select a task</h1>
-          <button id="edit-btn" class="edit-btn" onclick="toggleEdit(true)">
-            ✏️ Edit
-          </button>
+        <div class="filter-group">
+          <div class="filter-label">Status</div>
+          <div class="tabs status-tabs">
+            <button class="tab active" data-value="">All</button>
+            <button class="tab" data-value="pending">Pending</button>
+            <button class="tab" data-value="in progress">In progress</button>
+            <button class="tab" data-value="done">Done</button>
+          </div>
         </div>
 
-        <!-- INFO -->
+        <div class="filter-group">
+          <div class="filter-label">Priority</div>
+          <div class="tabs priority-tabs">
+            <button class="tab active" data-value="">All</button>
+            <button class="tab" data-value="low">Low</button>
+            <button class="tab" data-value="medium">Medium</button>
+            <button class="tab" data-value="high">High</button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-label">Difficulty</div>
+          <div class="tabs difficulty-tabs">
+            <button class="tab active" data-value="">All</button>
+            <button class="tab" data-value="easy">Easy</button>
+            <button class="tab" data-value="medium">Medium</button>
+            <button class="tab" data-value="hard">Hard</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ===== TASK LIST ===== -->
+      <section class="left-page">
+        <div id="task-list" class="task-list">
+          <!-- tasks rendered by JS -->
+        </div>
+      </section>
+
+      <!-- ===== TASK DETAILS ===== -->
+      <section class="right-page">
+        <div class="card-header">
+          <h1 id="details-title">Select a task</h1>
+
+          <div>
+            <button class="header-btn" id="edit-btn" onclick="toggleEdit(true)">
+              ✏️ Edit
+            </button>
+            <button class="header-btn delete" onclick="deleteTask()">
+              🗑 Delete
+            </button>
+          </div>
+        </div>
+
         <div class="task-info">
           <div>
             <div class="label">Due</div>
@@ -162,7 +319,6 @@
           </div>
         </div>
 
-        <!-- DESCRIPTION -->
         <div class="task-description">
           <h3>Description</h3>
           <textarea
@@ -173,7 +329,6 @@
           ></textarea>
         </div>
 
-        <!-- ACTIONS -->
         <div class="task-actions hidden" id="edit-actions">
           <button class="btn-secondary" onclick="toggleEdit(false)">
             Cancel
@@ -181,20 +336,27 @@
           <button class="btn-primary" onclick="saveTask()">Save changes</button>
         </div>
 
-        <!-- META -->
         <div class="task-meta">
-          <div>
-            <span class="meta-label">Created:</span>
-            <span id="details-created">—</span>
+          <div class="datetimes">
+            <div>
+              <span class="meta-label">Created:</span>
+              <span id="details-created">—</span>
+            </div>
+            <div>
+              <span class="meta-label">Last updated:</span>
+              <span id="details-updated">—</span>
+            </div>
           </div>
-          <div>
-            <span class="meta-label">Last updated:</span>
-            <span id="details-updated">—</span>
+
+          <div class="timer">
+            <button class="start-btn" onclick="startTimer()">Start</button>
+            <button class="stop-btn" onclick="stopTimer()">Stop</button>
           </div>
         </div>
-      </div>
+      </section>
     </div>
 
+    <!-- ===== PAGINATION ===== -->
     <div id="pagination" class="pagination"></div>
   </body>
 </html>

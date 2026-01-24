@@ -137,7 +137,7 @@ print("\n✅ Best model saved to model/best_difficulty_model.pkl")
 
 
 # =========================
-# 7. SAVE METRICS (🔥 ВАЖЛИВО)
+# 7. SAVE METRICS 
 # =========================
 
 with open("model/metrics.json", "w", encoding="utf-8") as f:
