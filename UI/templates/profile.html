@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/profile.css" />
+  </head>
+  <script>
+
+
+    async function loadProfile(){
+        const response = await fetch(`http://127.0.0.1:8000/profile`)
+        const data = await response.json()
+        document.getElementById("profile-username").textContent = data.username;
+        document.getElementById("profile-email").textContent = data.email;
+        document.getElementById("profile-created").textContent = data.created_at;
+        document.getElementById("total-tasks").textContent = data.total_tasks;
+        document.getElementById("completed-tasks").textContent = data.done_tasks;
+        document.getElementById("completion-percent").textContent = Math.round((data.done_tasks*100)/339) + "%";
+
+    }
+
+    
+    loadProfile()
+  </script>
+  <body>
+    <div class="profile-container">
+      <h1 class="profile-title">Profile</h1>
+
+      <div class="profile-card">
+        <div class="profile-header">
+          <div class="profile-avatar">M</div>
+
+          <div class="profile-meta">
+            <div class="profile-username" id="profile-username"></div>
+            <div class="profile-email" id="profile-email">max@example.com</div>
+            <div class="profile-joined" id="profile-created">
+              Joined Jan 2025
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-divider"></div>
+
+        <div class="profile-stats">
+          <div class="stat">
+            <div class="stat-value" id="total-tasks">42</div>
+            <div class="stat-label">Total tasks</div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-value" id="completed-tasks">19</div>
+            <div class="stat-label">Completed</div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-value" id="completion-percent">45%</div>
+            <div class="stat-label">Completion</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -23,7 +23,7 @@ from sklearn.svm import LinearSVC
 # 1. LOAD & CLEAN DATA
 # =========================
 
-df = pd.read_csv("data/difficulty_data.csv")
+df = pd.read_csv("/Users/drake/Documents/Projects/To_Do_List/data/difficulty_data.csv")
 
 df["difficulty"] = df["difficulty"].str.strip().str.lower()
 df = df[df["difficulty"].isin(["easy", "medium", "hard"])]
@@ -132,15 +132,15 @@ print("Best macro F1:", best_score)
 # 6. SAVE BEST MODEL
 # =========================
 
-joblib.dump(best_model, "model/best_difficulty_model.pkl")
-print("\n✅ Best model saved to model/best_difficulty_model.pkl")
+joblib.dump(best_model, "/Users/drake/Documents/Projects/To_Do_List/app/model/best_difficulty_model.pkl")
+print("\n✅ Best model saved to /Users/drake/Documents/Projects/To_Do_List/app/model/best_difficulty_model.pkl")
 
 
 # =========================
 # 7. SAVE METRICS 
 # =========================
 
-with open("model/metrics.json", "w", encoding="utf-8") as f:
+with open("app/model/metrics.json", "w", encoding="utf-8") as f:
     json.dump(metrics, f, indent=2, ensure_ascii=False)
 
 print("📊 Metrics saved to model/metrics.json")

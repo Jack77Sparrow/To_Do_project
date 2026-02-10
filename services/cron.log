@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/Users/drake/Documents/Projects/To_Do_List/services/update_overdue.py", line 1, in <module>
+    from app.db_sqlalchemy.connect import session, Task
+ModuleNotFoundError: No module named 'app'
+UPDATE tasks SET status=:status, is_archived=:is_archived WHERE (tasks.status NOT IN (__[POSTCOMPILE_status_1])) AND tasks.is_archived = false AND tasks.due_to < :due_to_1
+Overdue tasks complete
+UPDATE tasks SET status=:status, is_archived=:is_archived WHERE (tasks.status NOT IN (__[POSTCOMPILE_status_1])) AND tasks.is_archived = false AND tasks.due_to < :due_to_1
+Overdue tasks complete
+UPDATE tasks SET status=:status, is_archived=:is_archived WHERE (tasks.status NOT IN (__[POSTCOMPILE_status_1])) AND tasks.is_archived = false AND tasks.due_to < :due_to_1
+Overdue tasks complete
+UPDATE tasks SET status=:status, is_archived=:is_archived WHERE (tasks.status NOT IN (__[POSTCOMPILE_status_1])) AND tasks.is_archived = false AND tasks.due_to < :due_to_1
+Overdue tasks complete

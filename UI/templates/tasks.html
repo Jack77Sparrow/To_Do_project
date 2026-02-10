@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,6 +7,7 @@
     <title>Tasks</title>
 
     <script>
+
       let currentPage = 1;
       let currentTaskId = null;
       const limit = 15;
@@ -15,7 +16,8 @@
         priority: null,
         difficulty: null,
       };
-
+      let sortBy = "created_at";
+      let sortOrder = "desc";
 
       async function loadTasks(page = 1) {
         currentPage = page;
@@ -23,6 +25,8 @@
         const params = new URLSearchParams({
           page,
           limit,
+          sort_by: sortBy,
+          order: sortOrder,
         });
 
         if (filters.status) params.append("status", filters.status);
@@ -65,20 +69,22 @@
         console.log(data.total);
       }
 
-      function startTimer(){
+      function startTimer() {
         if (!currentTaskId) return;
         fetch(`http://127.0.0.1:8000/tasks/${currentTaskId}/start`, {
-          method: "POST"
-        })
+          method: "POST",
+        });
       }
 
-      function stopTimer(){
+      function stopTimer() {
         if (!currentTaskId) return;
-        const response = fetch(`http://127.0.0.1:8000/tasks/${currentTaskId}/stop`, {
-          method: "POST"
-        })
+        const response = fetch(
+          `http://127.0.0.1:8000/tasks/${currentTaskId}/stop`,
+          {
+            method: "POST",
+          },
+        );
       }
-
 
       function renderPagination(total, page, limit) {
         const pages = Math.ceil(total / limit);
@@ -102,7 +108,8 @@
         const task = await response.json();
         console.log(task.due_to);
         document.getElementById("details-title").innerText = task.title;
-        document.getElementById("details-due").value = task.due_to || "";
+        document.getElementById("details-due").value = task.due_to || "-";
+
         document.getElementById("details-priority").value =
           task.priority || "low";
         document.getElementById("details-status").value =
@@ -113,7 +120,7 @@
           task.created_at || "—";
         document.getElementById("details-updated").innerText =
           task.last_updated || "—";
-
+        
         toggleEdit(false);
       }
 
@@ -123,21 +130,17 @@
 
         document
           .querySelectorAll(
-            "#details-due, #details-priority, #details-status, #details-desc"
+            "#details-due, #details-priority, #details-status, #details-desc",
           )
           .forEach((el) => (el.disabled = !enable));
 
-        
-          
-
-        if (editBtn){
+        if (editBtn) {
           editBtn.classList.toggle("hidden", enable);
         }
-        
-        if (editActions){
+
+        if (editActions) {
           editActions.classList.toggle("hidden", !enable);
         }
-
       }
 
       async function deleteTask() {
@@ -146,7 +149,7 @@
           `http://127.0.0.1:8000/tasks/${currentTaskId}`,
           {
             method: "DELETE",
-          }
+          },
         );
         if (!response.ok) {
           throw new Error("Failed to delete task");
@@ -232,6 +235,41 @@
           });
         });
       });
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("DOM READY");
+
+        document.querySelectorAll(".sort-by-tabs .tab").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            console.log("CLICK SORT:", btn.dataset.sort);
+
+            sortBy = btn.dataset.sort;
+
+            btn.parentElement
+              .querySelectorAll(".tab")
+              .forEach((b) => b.classList.remove("active"));
+
+            btn.classList.add("active");
+
+            loadTasks(1);
+          });
+        });
+
+        document.querySelectorAll(".order-tabs .tab").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            console.log("CLICK ORDER:", btn.dataset.order);
+
+            sortOrder = btn.dataset.order;
+
+            btn.parentElement
+              .querySelectorAll(".tab")
+              .forEach((b) => b.classList.remove("active"));
+
+            btn.classList.add("active");
+
+            loadTasks(1);
+          });
+        });
+      });
     </script>
   </head>
 
@@ -270,6 +308,24 @@
             <button class="tab" data-value="hard">Hard</button>
           </div>
         </div>
+
+        <h3 class="filters-title">Sorting</h3>
+
+        <div class="filter-group">
+          <div class="filter-label">Sort by</div>
+          <div class="tabs sort-by-tabs">
+            <button class="tab active" data-sort="created_at">Created</button>
+            <button class="tab" data-sort="updated_at">Updated</button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-label">Order</div>
+          <div class="tabs order-tabs">
+            <button class="tab active" data-order="desc">Newest</button>
+            <button class="tab" data-order="asc">Oldest</button>
+          </div>
+        </div>
       </aside>
 
       <!-- ===== TASK LIST ===== -->
@@ -297,7 +353,7 @@
         <div class="task-info">
           <div>
             <div class="label">Due</div>
-            <input type="date" id="details-due" disabled />
+            <input type="date" id="details-due" placeholder="дд.мм.рррр" />
           </div>
 
           <div>

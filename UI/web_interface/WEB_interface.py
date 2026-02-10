@@ -17,7 +17,10 @@ from services.tasks import (get_all_tasks_service,
                             delete_task_from_db, 
                             add_task_timer_services, 
                             update_task_timer_services,
-                            select_active_tasks_services)
+                            select_active_tasks_services,
+                            select_user_data_services,
+                            update_streak_services
+                            )
 
 
 app = FastAPI()
@@ -43,19 +46,32 @@ class Task(BaseModel):
     difficulty: str
     priority: Optional[str] = None
     status: str
+    source: str
     created_at: datetime
     last_updated: Optional[datetime] = None
     due_to: Optional[date] = None
 
 
+# -- user model
+class User(BaseModel):
+    id: int
+    username: str
+    email: str 
+    created_at: datetime
+    codewars_username: str
+    total_tasks: int
+    done_tasks: int
+
+# -- task response model 
 class TaskResponse(BaseModel):
     id: int
     title: str
     description: str
-    status: str
-    priority: str
-    difficulty: str
     category: str
+    difficulty: str
+    priority: str
+    status: str
+    source: str
     created_at: datetime
     last_updated: datetime
     due_to: date | None
@@ -63,11 +79,22 @@ class TaskResponse(BaseModel):
     class Config:
         from_attributes = True  
 
+# -- task page response model
+class TaskPageResponse(BaseModel):
+    items: List[TaskResponse]
+    total: int
+    page: int
+    limit: int
 
 @app.get("/")
 def read_root():
     """Main page"""
     return FileResponse("UI/templates/index.html")
+
+
+@app.get("/profile/me")
+def profile():
+    return FileResponse("UI/templates/profile.html")
 
 
 @app.get("/new_task")
@@ -107,29 +134,42 @@ def dashboard_advice():
 
 
 
+@app.get("/profile")
+async def get_user_data():
+    user_data = select_user_data_services()
+
+    return user_data
 
 
-# Сторінка з усіма тасками
-@app.get("/tasks", response_model=List[TaskResponse])
+
+
+@app.get("/tasks", response_model=TaskPageResponse)
 async def get_tasks(
     page: int = Query(1, ge=1),
     limit: int = Query(15, ge=1, le=100),
     status: str | None = Query(None),
     priority: str | None = Query(None),
-    difficulty: str | None = Query(None)
+    difficulty: str | None = Query(None),
+    sort_by: str = None, 
+    order: str = "desc",
+    is_archived: bool = False
 ):
-    # tasks = await load_tasks()
+    """function to get all tasks from db"""
+
     
     tasks = get_all_tasks_service(status=status, 
                                   priority=priority, 
-                                  difficulty=difficulty)
+                                  difficulty=difficulty,
+                                  sort_by=sort_by,
+                                  order=order,
+                                  is_archived=is_archived)
 
     offset = (page-1)*limit
-    end = offset + limit
+    paginated = tasks[offset: offset+limit]
 
 
     return {
-        "items": tasks[offset:end],
+        "items": paginated,
         "total": len(tasks),
         "page": page,
         "limit": limit
@@ -139,7 +179,7 @@ async def get_tasks(
 # to get all today tasks
 @app.get("/tasks/today")
 async def get_today_tasks():
-    return get_today_tasks_service
+    return get_today_tasks_service()
     
 
 
@@ -153,21 +193,18 @@ async def get_all_tasks():
 @app.get("/tasks/{task_id}")
 async def get_task(task_id: int):
     task = get_task_by_id(task_id=task_id)
-    return Task(**task)
+    return task
 
 
 # update task and change last_update to "CurrentTime"
 @app.patch("/tasks/{task_id}")
 async def update_task(task_id: int, data: TaskUpdate):
-        # tasks = await load_tasks()
     
     updated = update_task_service(task_id=task_id, update_data=data)
     if not updated:
         raise HTTPException(status_code=404, detail="Task not found")
-    
+    update_streak_services()
     return {'status': "updated"}
-
-
 
 
 
@@ -202,6 +239,7 @@ def start_task_timer(task_id: int):
 
 @app.post("/tasks/{task_id}/stop")
 def stop_task_timer(task_id: int):
+    update_streak_services()
     return update_task_timer_services(task_id=task_id)
 
 
@@ -224,6 +262,8 @@ def get_model_metrics():
 @app.delete("/tasks/{task_id}")
 async def delete_task(task_id: int):
     """delete task by id"""
-    return delete_task_from_db(task_id=task_id)
+    deleted_task = delete_task_from_db(task_id=task_id)
 
+    return {"status": "deleted",
+            "id": deleted_task}
 
