@@ -11,11 +11,10 @@ SessionLocal = sessionmaker(autoflush=False, autocommit=False, bind=engine)
 Base = declarative_base()
 
 
-session = SessionLocal()
 
 
-@contextmanager
 def db_session():
+    session = SessionLocal()
     try:
         yield session
         session.commit()

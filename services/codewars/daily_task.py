@@ -4,15 +4,18 @@
 import datetime
 import sys
 from pathlib import Path
-import traceback
-
-from random_kata import get_random_kata
-
-from app.db_sqlalchemy.models import session, User, Task
-from services.logger_config import logger
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT_DIR))
+from random_kata import get_random_kata
+
+from app.db_sqlalchemy.models import User, Task
+from services.logger_config import logger
+import traceback
+from app.db_sqlalchemy.connect import db_session
+
+
+session = next(db_session())
 
 def create_task_codewars(user_id):
     """
@@ -50,11 +53,12 @@ def create_task_codewars(user_id):
             logger.error(f"Task for today already exist")
     except Exception as e:
         logger.error(f"Exception occured:\n", traceback.format_exc())
+        session.rollback()
     finally:
         # close session
         session.close()
 
 if __name__ == "__main__":
     create_task_codewars(user_id=1)
-    print("CRON RUN:", datetime.datetime.now())
+    logger.info(f"CRON RUN: {datetime.datetime.now()}")
         

@@ -1,13 +1,16 @@
 
 from fastapi.responses import RedirectResponse, JSONResponse, FileResponse
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query, Depends
 from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 from fastapi import Form
 from fastapi.exceptions import HTTPException
 import json
 from datetime import datetime, date
-from typing import Optional, List, Dict
+from typing import Optional, List
+from app.db_sqlalchemy.connect import db_session
+from sqlalchemy.orm import Session
+
 
 from services.tasks import (get_all_tasks_service, 
                             get_today_tasks_service, 
@@ -152,17 +155,20 @@ async def get_tasks(
     difficulty: str | None = Query(None),
     sort_by: str = None, 
     order: str = "desc",
-    is_archived: bool = False
+    is_archived: bool = False,
+    db: Session = Depends(db_session)
 ):
     """function to get all tasks from db"""
 
     
-    tasks = get_all_tasks_service(status=status, 
+    tasks = get_all_tasks_service(db=db,
+                                  status=status, 
                                   priority=priority, 
                                   difficulty=difficulty,
                                   sort_by=sort_by,
                                   order=order,
-                                  is_archived=is_archived)
+                                  is_archived=is_archived
+                                  )
 
     offset = (page-1)*limit
     paginated = tasks[offset: offset+limit]
@@ -191,19 +197,19 @@ async def get_all_tasks():
 
 # to get task by id
 @app.get("/tasks/{task_id}")
-async def get_task(task_id: int):
-    task = get_task_by_id(task_id=task_id)
+async def get_task(task_id: int, db: Session = Depends(db_session)):
+    task = get_task_by_id(db=db, task_id=task_id)
     return task
 
 
 # update task and change last_update to "CurrentTime"
 @app.patch("/tasks/{task_id}")
-async def update_task(task_id: int, data: TaskUpdate):
+async def update_task(task_id: int, data: TaskUpdate, db: Session = Depends(db_session)):
     
-    updated = update_task_service(task_id=task_id, update_data=data)
+    updated = update_task_service(db=db, task_id=task_id, update_data=data)
     if not updated:
         raise HTTPException(status_code=404, detail="Task not found")
-    update_streak_services()
+    
     return {'status': "updated"}
 
 
@@ -217,9 +223,10 @@ async def add_task(
     due_to: str = Form(""),
     priority: str = Form(""),
     status: str = Form(""),
+    db: Session = Depends(db_session)
 ):
 
-    return add_task_to_database({'title': title, 
+    return add_task_to_database(db, {'title': title, 
                                  'description':description,  
                                  'due_to':due_to, 
                                  'priority': priority, 
@@ -233,20 +240,19 @@ def add_project():
 
 
 @app.post("/tasks/{task_id}/start")
-def start_task_timer(task_id: int):
-    return add_task_timer_services(task_id=task_id)
+def start_task_timer(task_id: int, db: Session = Depends(db_session)):
+    return add_task_timer_services(db, task_id=task_id)
 
 
 @app.post("/tasks/{task_id}/stop")
-def stop_task_timer(task_id: int):
-    update_streak_services()
-    return update_task_timer_services(task_id=task_id)
+def stop_task_timer(task_id: int, db: Session = Depends(db_session)):
+    return update_task_timer_services(db, task_id=task_id)
 
 
 
 @app.get("/timer/active")
-def timer_active():
-    data = select_active_tasks_services()
+def timer_active(db: Session = Depends(db_session)):
+    data = select_active_tasks_services(db)
     return {"timer data": data}
 
 
@@ -260,9 +266,9 @@ def get_model_metrics():
 
 
 @app.delete("/tasks/{task_id}")
-async def delete_task(task_id: int):
+async def delete_task(task_id: int, db: Session = Depends(db_session)):
     """delete task by id"""
-    deleted_task = delete_task_from_db(task_id=task_id)
+    deleted_task = delete_task_from_db(db, task_id=task_id)
 
     return {"status": "deleted",
             "id": deleted_task}

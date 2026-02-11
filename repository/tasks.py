@@ -10,7 +10,7 @@ import datetime
 from app.model.my_models import model, difficulty_model
 from app.db_sqlalchemy.models import Task, TaskTimeLogs, User
 from app.db_sqlalchemy.connect import db_session
-from sqlalchemy import update, func, desc, case
+from sqlalchemy import update, func, desc, case, select
 from sqlalchemy.exc import NoResultFound
 from services.logger_config import logger
 from functools import wraps
@@ -19,15 +19,10 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_DIR))
 
 
-def with_session(func):
-    wraps(func)
-    def inner(*args, **kwargs):
-        with db_session() as session:
-            return func(*args, session=session, **kwargs)
-    return inner
 
-@with_session
-def select_all_tasks(status, priority, difficulty, sort_by, order, is_arvhived, session):
+
+
+def select_all_tasks(session, status, priority, difficulty, sort_by, order, is_arvhived):
     
     query = session.query(Task)
 
@@ -61,19 +56,19 @@ def select_all_tasks(status, priority, difficulty, sort_by, order, is_arvhived, 
 
 
     
-@with_session
+
 def select_today_tasks(session):
     query = session.query(Task).where(Task.due_to == datetime.date.today(), Task.is_deleted == False)
     return query.all()
 
-@with_session
-def select_task_by_id(task_id: int, session):
+
+def select_task_by_id(session, task_id: int):
     query = session.query(Task).where(Task.id == task_id, Task.is_deleted == False)
     return query.scalar()
 
     
-@with_session
-def update_task(task_id: int, data: dict, session):
+
+def update_task(session, task_id: int, data: dict):
     try:
         task = session.get(Task, task_id)
 
@@ -96,18 +91,18 @@ def update_task(task_id: int, data: dict, session):
 
 
         task.last_updated = datetime.datetime.now()
-        
+        logger.info(f"Task {task.title} succesfully updated")
         session.commit()
 
         return task
     except Exception:
-        logger.error(f"Can't update task {task_id}:\n", traceback.format_exc())
+        logger.error(f"Exception occured:\n", exc_info=True)
     
     
 
 
-@with_session
-def add_task_to_db(data: dict, session):
+
+def add_task_to_db(session, data: dict):
     
     try:
         text = f"{data['title']} {data['description']}"
@@ -129,15 +124,16 @@ def add_task_to_db(data: dict, session):
                                         due_to=due_to)
         session.add(insert_data)
         session.commit()
+        logger.info(f"Task {data.get("title")} successfully added to db")
         return insert_data
     except Exception:
-        logger.error(f"Exception occured:\n", traceback.format_exc())
+        logger.error(f"Exception occured:\n", exc_info=True)
         return
 
         
 
-@with_session
-def delete_task(task_id: int, session): 
+
+def delete_task(session, task_id: int): 
     task = session.get(Task, task_id)
 
     if not task:
@@ -146,37 +142,53 @@ def delete_task(task_id: int, session):
     task.is_deleted = True
 
     session.commit()
-
+    logger.info(f"Task {task.title} succesfullty deleted")
     return task_id
 
-@with_session
-def add_timer_to_taskdb(task_id: int, started_at: datetime, session):
 
-    task_timer = TaskTimeLogs(task_id=task_id, started_at=started_at)
+def add_timer_to_taskdb(session, task_id: int, started_at: datetime):
+    try:
+        task_status = session.get(Task, task_id)
 
-    session.add(task_timer)
-    session.commit()
+        if task_status.status == 'done':
+            logger.info(f"Task {task_id} already done")
+        else:
+            select_active_task = select(TaskTimeLogs.task_id).where(TaskTimeLogs.task_id == task_id).where(TaskTimeLogs.ended_at == None)
+            active_tasks = session.execute(select_active_task).all()
+            task_timer = TaskTimeLogs(task_id=task_id, started_at=started_at)
+            if (task_id, ) in active_tasks:
+                print("you cant do this")
+            else:
+                session.add(task_timer)
+                session.commit()
+                logger.info(f"Timer for task-{task_id} started_at-{started_at} added succesfully")
+            
+    except Exception:
+        logger.error(f"Exception occured:\n", exc_info=True)
 
     
 
-@with_session
-def update_timer_to_taskdb(task_id: int, stop_at: datetime, session):
 
-    sql = update(TaskTimeLogs).where(TaskTimeLogs.task_id == task_id).values(ended_at=stop_at, duration_sec=func.extract('epoch', stop_at-  TaskTimeLogs.started_at))
-    session.execute(sql)
-    session.commit()
+def update_timer_to_taskdb(session, task_id: int, stop_at: datetime):
+    try:
+        sql = update(TaskTimeLogs).where(TaskTimeLogs.task_id == task_id).values(ended_at=stop_at, duration_sec=func.extract('epoch', stop_at-  TaskTimeLogs.started_at))
+        session.execute(sql)
+        session.commit()
+        logger.info(f"Timer for task-{task_id} endet_at-{stop_at} stoped succesfully")
+    except Exception:
+        logger.error(f"Exception occured:\n", exc_info=True)
 
-@with_session
+
 def select_active_tasks(session):
     try:
         query = session.query(TaskTimeLogs).where(TaskTimeLogs.ended_at == None).one()
         return query
-    except NoResultFound as err:
-        logger.error(err)
+    except NoResultFound:
+        logger.error(f"Exception occured:\n", exc_info=True)
         return None
 
 
-@with_session
+
 def select_user_data(session):
 
     try:
@@ -184,12 +196,13 @@ def select_user_data(session):
         ).label("done_tasks"),).outerjoin(Task, Task.user_id == User.id).group_by(User.id).one()
         return query
     except NoResultFound as err:
-        logger.error(err)
+        logger.error(f"Exception occured:\n", exc_info=True)
         return None
     
-@with_session
-def update_streak(user_id:int, session):
 
+def update_streak(session, user_id:int):
+
+    
     today = datetime.date.today()
     query = session.query(User).where(User.id == user_id).first()
     today = datetime.date(year=2026, month=2, day=18)
@@ -206,7 +219,7 @@ def update_streak(user_id:int, session):
             logger.info(f"streak for USER - {user_id} equal 0")
             query.current_streak = 0
     except Exception as e:
-        logger.error(f"Exception occured:\n", traceback.format_exc())
+        logger.error(f"Exception occured:\n", exc_info=True)
     
     query.last_activity_date = today
     query.longest_streak = max(query.longest_streak, query.current_streak)

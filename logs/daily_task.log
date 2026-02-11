@@ -1,1 +1,81 @@
 2026-02-09 21:09:14,401 - INFO - Task succesfully created!
+2026-02-10 18:39:26,981 - INFO - test
+2026-02-10 18:39:29,523 - INFO - test
+2026-02-10 18:40:37,559 - INFO - Nowthing new
+2026-02-10 18:42:06,750 - INFO - Task succesfully created!
+2026-02-10 18:42:31,189 - ERROR - Task for today already exist
+2026-02-10 18:42:31,189 - INFO - CRON RUN: 2026-02-10 18:42:31.189865
+2026-02-10 18:44:57,938 - INFO - Task new_taskwtf succesfully updated
+2026-02-10 18:58:00,961 - INFO - Task new_taskwtf succesfullty deleted
+2026-02-10 19:00:03,242 - INFO - Nowthing new
+2026-02-10 19:00:38,968 - INFO - Timer for task-643 started_at-2026-02-10 19:00:38.960161 added succesfully
+2026-02-10 19:00:42,052 - INFO - Timer for task-643 endet_at-2026-02-10 19:00:42.045070 stoped succesfully
+2026-02-10 19:10:03,828 - INFO - Nowthing new
+2026-02-10 19:11:20,469 - INFO - Timer for task-668 started_at-2026-02-10 19:11:20.461521 added succesfully
+2026-02-10 19:11:21,542 - INFO - Timer for task-668 endet_at-2026-02-10 19:11:21.533771 stoped succesfully
+2026-02-10 19:11:22,949 - INFO - Timer for task-640 started_at-2026-02-10 19:11:22.946570 added succesfully
+2026-02-10 19:11:23,831 - INFO - Timer for task-640 endet_at-2026-02-10 19:11:23.827581 stoped succesfully
+2026-02-10 19:11:25,249 - INFO - Timer for task-639 started_at-2026-02-10 19:11:25.246151 added succesfully
+2026-02-10 19:11:52,664 - INFO - Timer for task-670 started_at-2026-02-10 19:11:52.658998 added succesfully
+2026-02-10 19:11:53,703 - INFO - Timer for task-670 endet_at-2026-02-10 19:11:53.700006 stoped succesfully
+2026-02-10 19:12:03,881 - INFO - Timer for task-641 started_at-2026-02-10 19:12:03.877508 added succesfully
+2026-02-10 19:12:04,823 - INFO - Timer for task-641 endet_at-2026-02-10 19:12:04.819823 stoped succesfully
+2026-02-10 19:12:14,760 - INFO - Timer for task-674 started_at-2026-02-10 19:12:14.756749 added succesfully
+2026-02-10 19:12:16,677 - INFO - Timer for task-674 endet_at-2026-02-10 19:12:16.673297 stoped succesfully
+2026-02-10 19:12:35,570 - INFO - Timer for task-641 started_at-2026-02-10 19:12:35.564537 added succesfully
+2026-02-10 19:13:41,972 - INFO - Timer for task-667 started_at-2026-02-10 19:13:41.968929 added succesfully
+2026-02-10 19:14:23,477 - INFO - Timer for task-667 endet_at-2026-02-10 19:14:23.467295 stoped succesfully
+2026-02-10 19:18:33,827 - INFO - Timer for task-667 started_at-2026-02-10 19:18:33.750137 added succesfully
+2026-02-10 19:19:26,306 - INFO - Timer for task-667 started_at-2026-02-10 19:19:26.213670 added succesfully
+2026-02-10 19:20:03,472 - INFO - Nowthing new
+2026-02-10 19:20:22,355 - INFO - Timer for task-667 endet_at-2026-02-10 19:20:22.276434 stoped succesfully
+2026-02-10 19:20:30,245 - INFO - Task already done
+2026-02-10 19:27:01,793 - INFO - Task 667 already done
+2026-02-10 19:27:46,221 - ERROR - Exception occured:
+Traceback (most recent call last):
+  File "/Users/drake/Documents/Projects/To_Do_List/repository/tasks.py", line 156, in add_timer_to_taskdb
+    select_active_task = session.get(TaskTimeLogs.task_id, {"task_id": task_id, "ended_at": None})
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/drake/Library/Caches/pypoetry/virtualenvs/to-do-list-y1Q1jT6Y-py3.12/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 3680, in get
+    return self._get_impl(
+           ^^^^^^^^^^^^^^^
+  File "/Users/drake/Library/Caches/pypoetry/virtualenvs/to-do-list-y1Q1jT6Y-py3.12/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 3769, in _get_impl
+    raise sa_exc.ArgumentError(
+sqlalchemy.exc.ArgumentError: Expected mapped class or mapper, got: <sqlalchemy.orm.attributes.InstrumentedAttribute object at 0x117e25080>
+2026-02-10 19:30:03,843 - INFO - Nowthing new
+2026-02-10 19:31:47,527 - ERROR - Exception occured:
+Traceback (most recent call last):
+  File "/Users/drake/Documents/Projects/To_Do_List/repository/tasks.py", line 156, in add_timer_to_taskdb
+    select_active_task = select(TaskTimeLogs.id).where(TaskTimeLogs.task_id == task_id & TaskTimeLogs.ended_at is None)
+                                                                               ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for &: 'int' and 'InstrumentedAttribute'
+2026-02-10 19:32:26,056 - ERROR - Exception occured:
+Traceback (most recent call last):
+  File "/Users/drake/Documents/Projects/To_Do_List/repository/tasks.py", line 160, in add_timer_to_taskdb
+    if task_id in select_active_task:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: argument of type 'Select' is not iterable
+2026-02-10 19:33:11,953 - INFO - Timer for task-642 started_at-2026-02-10 19:33:11.861273 added succesfully
+2026-02-10 19:33:19,318 - INFO - Timer for task-642 started_at-2026-02-10 19:33:19.310583 added succesfully
+2026-02-10 19:33:53,633 - INFO - Timer for task-642 started_at-2026-02-10 19:33:53.551693 added succesfully
+2026-02-10 19:34:07,689 - INFO - Timer for task-642 started_at-2026-02-10 19:34:07.607840 added succesfully
+2026-02-10 19:35:05,892 - INFO - Timer for task-642 started_at-2026-02-10 19:35:05.815362 added succesfully
+2026-02-10 19:35:50,131 - INFO - Timer for task-642 started_at-2026-02-10 19:35:50.054820 added succesfully
+2026-02-10 19:37:21,486 - INFO - Timer for task-642 started_at-2026-02-10 19:37:21.430697 added succesfully
+2026-02-10 19:37:22,078 - INFO - Timer for task-642 started_at-2026-02-10 19:37:22.070718 added succesfully
+2026-02-10 19:37:38,448 - INFO - Timer for task-642 started_at-2026-02-10 19:37:38.367416 added succesfully
+2026-02-10 19:37:54,861 - INFO - Timer for task-642 endet_at-2026-02-10 19:37:54.854051 stoped succesfully
+2026-02-10 19:38:39,683 - INFO - Timer for task-642 started_at-2026-02-10 19:38:39.598768 added succesfully
+2026-02-10 19:38:50,135 - INFO - Timer for task-642 started_at-2026-02-10 19:38:50.127185 added succesfully
+2026-02-10 19:39:16,449 - INFO - Timer for task-642 endet_at-2026-02-10 19:39:16.441621 stoped succesfully
+2026-02-10 19:40:04,171 - INFO - Nowthing new
+2026-02-10 19:50:03,617 - INFO - Nowthing new
+2026-02-10 20:06:03,917 - INFO - Nowthing new
+2026-02-10 20:10:03,832 - INFO - Nowthing new
+2026-02-10 20:20:03,918 - INFO - Nowthing new
+2026-02-10 20:30:04,715 - INFO - Nowthing new
+2026-02-10 21:10:03,920 - INFO - Nowthing new
+2026-02-10 21:20:04,359 - INFO - Nowthing new
+2026-02-11 08:20:08,014 - INFO - Nowthing new
+2026-02-11 08:30:04,646 - INFO - Nowthing new
+2026-02-11 08:50:03,901 - INFO - Nowthing new
