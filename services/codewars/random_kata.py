@@ -1,13 +1,14 @@
+import traceback
 from playwright.sync_api import sync_playwright
 import random
 import requests
 from pathlib import Path
 import sys
+ROOT_PATH = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT_PATH))
 
 from services.logger_config import logger
 
-ROOT_PATH = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT_PATH))
 
 
 def get_difficult(kata_id):
@@ -68,4 +69,6 @@ def get_random_kata():
                 browser.close()
 
     except Exception as e:
-        logger.error(f"Something went wrong in get_random_kata FILE (random_kata.py)")
+        logger.error(f"Exception occured:\n {traceback.format_exc()}")
+
+
