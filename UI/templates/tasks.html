@@ -7,7 +7,6 @@
     <title>Tasks</title>
 
     <script>
-
       let currentPage = 1;
       let currentTaskId = null;
       const limit = 15;
@@ -50,17 +49,34 @@
           const difficulty = task.difficulty
             ? task.difficulty.toLowerCase()
             : "";
-
-          item.innerHTML = `
-            <div class="task-left">
-              <img src="../static/images/icons/to-do.png" class="task-icon" />
-              <div class="task-title">${task.title}</div>
-            </div>
-            <div class="task-difficult ${difficulty}">
-              ${difficulty || "-"}
-            </div>
-            <div class="task-tag">${task.category || "-"}</div>
-          `;
+          if (task.source == "user") {
+            item.innerHTML = `
+    <div class="task-left">
+      <img src="../static/images/icons/to-do.png" class="task-icon" />
+      <div class="task-title">${task.title}</div>
+    </div>
+    <div class="task-right">
+      <div class="task-difficult ${difficulty}">
+        ${difficulty || "-"}
+      </div>
+      <div class="task-tag">${task.category || "-"}</div>
+    </div>
+`;
+          }
+          else if (task.source == "codewars") {
+            item.innerHTML = `
+    <div class="task-left">
+      <img src="../static/images/icons/icons8-codewars-48.png" class="task-icon" />
+      <div class="task-title">${task.title}</div>
+    </div>
+    <div class="task-right">
+      <div class="task-difficult ${difficulty}">
+        ${difficulty || "-"}
+      </div>
+      <div class="task-tag">${task.category || "-"}</div>
+    </div>
+`;
+          }
 
           list.appendChild(item);
         });
@@ -120,7 +136,7 @@
           task.created_at || "—";
         document.getElementById("details-updated").innerText =
           task.last_updated || "—";
-        
+
         toggleEdit(false);
       }
 

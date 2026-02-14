@@ -184,8 +184,8 @@ async def get_tasks(
 
 # to get all today tasks
 @app.get("/tasks/today")
-async def get_today_tasks():
-    return get_today_tasks_service()
+async def get_today_tasks(db: Session = Depends(db_session)):
+    return get_today_tasks_service(db)
     
 
 
@@ -259,7 +259,7 @@ def timer_active(db: Session = Depends(db_session)):
 
 @app.get("/api/model-metrics")
 def get_model_metrics():
-    with open("model/metrics.json", "r", encoding="utf-8") as f:
+    with open("app/model/metrics.json", "r", encoding="utf-8") as f:
         data = json.load(f)
     return JSONResponse(content=data)
 

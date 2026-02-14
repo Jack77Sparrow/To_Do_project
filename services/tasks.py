@@ -33,8 +33,8 @@ def get_all_tasks_service(db,
 
 
 
-def get_today_tasks_service():
-    return select_today_tasks()
+def get_today_tasks_service(db):
+    return select_today_tasks(db)
     
 
 def get_task_by_id(db, task_id: int):

@@ -123,13 +123,34 @@ body {
   font-weight: 500;
 }
 
-.task-tag,
-.task-difficult {
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 12px;
+
+.task-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
 }
 
+
+.task-right {
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+  flex-shrink: 0;
+}
+
+
+.task-tag,
+.task-difficult {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid black;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 .task-difficult.easy {
   background: #dcfce7;
   color: #166534;
