@@ -19,15 +19,4 @@ Base = declarative_base()
 
 
 
-def db_session():
-    session = SessionLocal()
-    try:
-        yield session
-        session.commit()
-    except Exception:
-        session.rollback()
-        logger.error(f"Database operation failed:\n", traceback.format_exc())
-        raise
-    finally:
-        session.close()
 

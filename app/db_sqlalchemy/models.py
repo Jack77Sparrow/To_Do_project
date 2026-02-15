@@ -2,10 +2,10 @@ from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy import Integer, String, Column, Text, Boolean, ForeignKey, UniqueConstraint, text
 from sqlalchemy.types import DateTime, Date
 from sqlalchemy.sql import func
+from connect import Base
 
 
 
-Base = declarative_base()
 
 
 

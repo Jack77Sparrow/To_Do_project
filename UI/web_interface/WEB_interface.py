@@ -8,9 +8,10 @@ from fastapi.exceptions import HTTPException
 import json
 from datetime import datetime, date
 from typing import Optional, List
-from app.db_sqlalchemy.connect import db_session
 from sqlalchemy.orm import Session
-
+from app.db_sqlalchemy.connect import SessionLocal, Base, engine
+import traceback
+from services.logger_config import logger
 
 from services.tasks import (get_all_tasks_service, 
                             get_today_tasks_service, 
@@ -22,12 +23,28 @@ from services.tasks import (get_all_tasks_service,
                             update_task_timer_services,
                             select_active_tasks_services,
                             select_user_data_services,
-                            update_streak_services
                             )
 
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="UI/static"), name="static")
+
+Base.metadata.create_all(bind=engine)
+
+
+def db_session():
+    session = SessionLocal()
+    try:
+        yield session
+        session.commit()
+    except Exception:
+        session.rollback()
+        logger.error(f"Database operation failed:\n", traceback.format_exc())
+        raise
+    finally:
+        session.close()
+
+
 
 
 
