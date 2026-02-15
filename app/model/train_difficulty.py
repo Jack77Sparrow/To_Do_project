@@ -19,9 +19,9 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
 
 
-# =========================
-# 1. LOAD & CLEAN DATA
-# =========================
+
+# LOAD & CLEAN DATA
+
 
 df = pd.read_csv("/Users/drake/Documents/Projects/To_Do_List/data/difficulty_data.csv")
 
@@ -36,9 +36,9 @@ print(y.value_counts())
 print("-" * 40)
 
 
-# =========================
-# 2. SPLIT (70 / 15 / 15)
-# =========================
+
+# SPLIT (70 / 15 / 15)
+
 
 X_train, X_temp, y_train, y_temp = train_test_split(
     X, y, test_size=0.3, random_state=42, stratify=y
@@ -49,9 +49,9 @@ X_val, X_test, y_val, y_test = train_test_split(
 )
 
 
-# =========================
-# 3. MODELS
-# =========================
+
+# MODELS
+
 
 models = {
     "Naive Bayes": MultinomialNB(),
@@ -70,9 +70,9 @@ best_model = None
 best_score = 0.0
 
 
-# =========================
-# 4. TRAIN & EVALUATE
-# =========================
+
+# TRAIN & EVALUATE
+
 
 for name, clf in models.items():
     print(f"\n=== {name} ===")
@@ -116,9 +116,9 @@ for name, clf in models.items():
         best_model = pipeline
 
 
-# =========================
-# 5. RESULTS SUMMARY
-# =========================
+
+# RESULTS SUMMARY
+
 
 print("\n=== MODEL COMPARISON ===")
 for name, score in results.items():
@@ -128,17 +128,17 @@ print("\nBest model:", max(results, key=results.get))
 print("Best macro F1:", best_score)
 
 
-# =========================
-# 6. SAVE BEST MODEL
-# =========================
+
+# SAVE BEST MODEL
+
 
 joblib.dump(best_model, "/Users/drake/Documents/Projects/To_Do_List/app/model/best_difficulty_model.pkl")
 print("\n✅ Best model saved to /Users/drake/Documents/Projects/To_Do_List/app/model/best_difficulty_model.pkl")
 
 
-# =========================
-# 7. SAVE METRICS 
-# =========================
+
+# SAVE METRICS 
+
 
 with open("app/model/metrics.json", "w", encoding="utf-8") as f:
     json.dump(metrics, f, indent=2, ensure_ascii=False)

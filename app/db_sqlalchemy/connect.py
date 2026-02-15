@@ -1,12 +1,18 @@
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-from contextlib import contextmanager
+
 from services.logger_config import logger
 import traceback
 
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
-engine = create_engine('postgresql+psycopg2://postgres:Max.Brawl2001@localhost:5432/task_manager')
+postgre_login = os.getenv("POSTGRES_USER")
+postgre_password = os.getenv("POSTGRES_PASSWORD")
+
+engine = create_engine(f'postgresql+psycopg2://{postgre_login}:{postgre_password}@db:5432/task_manager')
 SessionLocal = sessionmaker(autoflush=False, autocommit=False, bind=engine)
 Base = declarative_base()
 

@@ -252,3 +252,124 @@ FileNotFoundError: [Errno 2] No such file or directory: 'auth.json'
 2026-02-14 10:30:03,039 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
 2026-02-14 10:40:03,859 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
 2026-02-14 10:50:03,990 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 11:00:03,221 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 11:10:03,015 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 11:20:04,337 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 11:30:03,802 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 11:40:04,144 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 11:50:03,385 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 12:00:03,032 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 12:10:04,173 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 12:20:04,158 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 12:30:04,590 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 12:40:04,191 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 12:50:03,830 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 13:00:03,481 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 13:10:05,177 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 13:44:12,303 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 13:50:04,114 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 14:00:04,315 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 14:10:04,094 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 14:20:04,992 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 14:30:04,753 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 14:40:04,826 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 14:50:05,360 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 15:00:04,209 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 15:10:03,629 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 15:20:04,529 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 15:39:03,331 - ERROR - random_kata.get_random_kata: Exception occured:
+ Traceback (most recent call last):
+  File "/Users/drake/Documents/Projects/To_Do_List/services/codewars/random_kata.py", line 31, in get_random_kata
+    context = browser.new_context(storage_state="auth.json")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/drake/Library/Caches/pypoetry/virtualenvs/to-do-list-y1Q1jT6Y-py3.12/lib/python3.12/site-packages/playwright/sync_api/_generated.py", line 14039, in new_context
+    self._sync(
+  File "/Users/drake/Library/Caches/pypoetry/virtualenvs/to-do-list-y1Q1jT6Y-py3.12/lib/python3.12/site-packages/playwright/_impl/_sync_base.py", line 115, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "/Users/drake/Library/Caches/pypoetry/virtualenvs/to-do-list-y1Q1jT6Y-py3.12/lib/python3.12/site-packages/playwright/_impl/_browser.py", line 169, in new_context
+    await self._browser_type._prepare_browser_context_params(params)
+  File "/Users/drake/Library/Caches/pypoetry/virtualenvs/to-do-list-y1Q1jT6Y-py3.12/lib/python3.12/site-packages/playwright/_impl/_browser_type.py", line 316, in _prepare_browser_context_params
+    (await async_readfile(storageState)).decode()
+     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/drake/Library/Caches/pypoetry/virtualenvs/to-do-list-y1Q1jT6Y-py3.12/lib/python3.12/site-packages/playwright/_impl/_helper.py", line 535, in async_readfile
+    return await loop.run_in_executor(None, inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/drake/Library/Caches/pypoetry/virtualenvs/to-do-list-y1Q1jT6Y-py3.12/lib/python3.12/site-packages/playwright/_impl/_helper.py", line 531, in inner
+    with open(file, "rb") as fh:
+         ^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'auth.json'
+
+2026-02-14 15:39:03,348 - INFO - daily_task.<module>: CRON RUN: 2026-02-14 15:39:03.348572
+2026-02-14 15:40:04,233 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 15:50:04,469 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 16:00:04,609 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 16:10:04,625 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 16:20:04,494 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 16:30:04,447 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 16:40:04,534 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 16:50:04,449 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 17:13:28,005 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 17:20:04,718 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 17:30:04,903 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 17:40:04,881 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 17:50:04,567 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 18:00:04,435 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 18:10:04,430 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 18:23:45,661 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 18:30:04,333 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 18:40:04,556 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 18:50:04,624 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 19:00:04,874 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 19:10:04,512 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 19:21:07,438 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 20:20:04,423 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 20:30:04,049 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 20:40:04,395 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 20:50:03,960 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 21:00:42,660 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 21:10:04,469 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 21:20:04,517 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 21:30:04,558 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 21:40:04,463 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 21:50:04,525 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 22:00:04,487 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 22:10:04,660 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 22:20:04,004 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 22:30:04,445 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 22:40:04,770 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 22:50:04,972 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-14 23:00:05,098 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 10:11:03,129 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 10:20:04,243 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 10:30:04,572 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 10:40:04,493 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 10:50:04,426 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 11:00:03,948 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 11:10:03,773 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 11:20:04,805 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 11:30:04,510 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 11:40:04,876 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 11:50:04,766 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 12:00:05,044 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 12:11:51,639 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 12:20:04,686 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 12:30:04,708 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 12:40:05,361 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 12:50:05,262 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 13:00:04,123 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 13:10:04,826 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 13:20:03,966 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 13:30:03,903 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 13:40:04,928 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 13:56:35,057 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 14:00:04,694 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 14:10:04,910 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 14:20:05,837 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 14:30:04,742 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 14:40:04,728 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 14:50:04,871 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
+2026-02-15 15:39:01,844 - INFO - daily_task.<module>: CRON RUN: 2026-02-15 15:39:01.844659

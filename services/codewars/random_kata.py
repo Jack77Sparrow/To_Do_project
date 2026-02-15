@@ -28,7 +28,7 @@ def get_random_kata():
         with sync_playwright() as p:
             # upload browser with 'autorisation file 'auth.json''
             browser = p.chromium.launch(headless=True)
-            context = browser.new_context(storage_state="auth.json")
+            context = browser.new_context(storage_state="/Users/drake/Documents/Projects/To_Do_List/auth.json")
             page = context.new_page()
 
             # url where we parse kata
