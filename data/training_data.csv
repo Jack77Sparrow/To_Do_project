@@ -1,0 +1,261 @@
+text,category
+Prepare for math exam,study
+Write laboratory report,study
+Study Python for exam,study
+Complete homework assignment,study
+Prepare presentation slides,study
+Clean the kitchen,home
+Wash the dishes,home
+Vacuum the apartment,home
+Buy groceries for dinner,home
+Take out the trash,home
+Finish project documentation,work
+Reply to emails,work
+Fix backend bug,work
+Implement new feature,work
+Attend team meeting,work
+Go to gym,personal
+Read a book,personal
+Go for a walk,personal
+Watch a movie,personal
+Plan weekend activities,personal
+Review calculus notes,study
+Practice linear algebra problems,study
+Read chapter on algorithms,study
+Prepare for physics test,study
+Solve programming exercises,study
+Study database normalization,study
+Watch tutorial on machine learning,study
+Rewrite lecture notes,study
+Prepare cheat sheet for exam,study
+Complete online quiz,study
+Analyze case study for class,study
+Prepare group project outline,study
+Research topic for essay,study
+Practice coding interview questions,study
+Review statistics formulas,study
+Study operating systems concepts,study
+Prepare slides for seminar,study
+Read scientific article,study
+Summarize textbook chapter,study
+Practice SQL queries,study
+Clean the bathroom,home
+Mop the floor,home
+Organize wardrobe,home
+Clean refrigerator,home
+Wash windows,home
+Do laundry,home
+Iron clothes,home
+Clean microwave,home
+Organize kitchen shelves,home
+Water house plants,home
+Fix broken shelf,home
+Change light bulb,home
+Organize storage boxes,home
+Clean desk area,home
+Prepare dinner at home,home
+Clean balcony,home
+Rearrange furniture,home
+Wash bathroom tiles,home
+Organize pantry,home
+Take recycling outside,home
+Write weekly work report,work
+Prepare project roadmap,work
+Review code changes,work
+Debug API endpoint,work
+Update project documentation,work
+Deploy application update,work
+Fix frontend layout issue,work
+Optimize database queries,work
+Attend sprint planning meeting,work
+Prepare task estimates,work
+Refactor legacy code,work
+Review pull request,work
+Implement authentication feature,work
+Test application performance,work
+Prepare demo for client,work
+Analyze bug reports,work
+Update Jira tickets,work
+Fix CI pipeline error,work
+Prepare release notes,work
+Monitor server logs,work
+Go jogging in the park,personal
+Meditate for 10 minutes,personal
+Call a friend,personal
+Listen to podcast,personal
+Plan personal goals,personal
+Go for bike ride,personal
+Watch documentary,personal
+Practice guitar,personal
+Learn new recipe,personal
+Take a short nap,personal
+Do morning stretching,personal
+Practice mindfulness,personal
+Organize personal finances,personal
+Read news articles,personal
+Plan vacation ideas,personal
+Take evening walk,personal
+Watch favorite TV series,personal
+Clean phone gallery,personal
+Write personal journal,personal
+Relax with music,personal
+Prepare notes for chemistry exam,study
+Review differential equations,study
+Practice data structures problems,study
+Study networking fundamentals,study
+Prepare answers for oral exam,study
+Watch lecture recording,study
+Read documentation on REST APIs,study
+Prepare summary for lecture,study
+Solve probability exercises,study
+Study software testing basics,study
+Prepare exam timetable,study
+Learn recursion concepts,study
+Practice Python list comprehensions,study
+Read about design patterns,study
+Study cloud computing basics,study
+Prepare UML diagrams,study
+Read lecture slides again,study
+Study encryption algorithms,study
+Practice writing SQL joins,study
+Prepare revision plan,study
+Clean bedroom floor,home
+Wash kitchen floor,home
+Clean bathroom sink,home
+Organize shoe rack,home
+Sort laundry by color,home
+Wash bed sheets,home
+Clean computer desk,home
+Organize cables at home,home
+Clean wardrobe shelves,home
+Remove old items,home
+Organize kitchen drawers,home
+Wash car at home,home
+Clean mirrors,home
+Organize cleaning supplies,home
+Wash curtains,home
+Prepare meal for next day,home
+Clean coffee machine,home
+Disinfect door handles,home
+Clean light switches,home
+Rearrange bookshelves,home
+Prepare daily work plan,work
+Update project timeline,work
+Review task backlog,work
+Prepare sprint report,work
+Fix authentication bug,work
+Improve API performance,work
+Test new feature,work
+Write technical documentation,work
+Prepare meeting agenda,work
+Deploy backend service,work
+Refactor frontend components,work
+Fix database migration issue,work
+Optimize server configuration,work
+Review error logs,work
+Prepare code review comments,work
+Fix UI responsiveness bug,work
+Update project dependencies,work
+Test user registration flow,work
+Analyze system performance,work
+Prepare work presentation,work
+Schedule dentist appointment,personal
+Go grocery shopping alone,personal
+Take a break from work,personal
+Practice breathing exercises,personal
+Listen to relaxing music,personal
+Watch educational video,personal
+Go out for fresh air,personal
+Organize personal notes,personal
+Plan fitness routine,personal
+Track daily habits,personal
+Write down thoughts,personal
+Clean email inbox,personal
+Read motivational article,personal
+Plan personal budget,personal
+Practice gratitude exercise,personal
+Call family member,personal
+Spend time outdoors,personal
+Watch comedy show,personal
+Prepare personal to-do list,personal
+Relax after busy day,personal
+Prepare for history exam,study
+Study data science concepts,study
+Read about neural networks,study
+Practice solving coding tasks,study
+Review class assignments,study
+Prepare presentation script,study
+Study functional programming,study
+Read about operating systems,study
+Practice algorithm complexity analysis,study
+Review lecture examples,study
+Clean storage room,home
+Wash dishes after dinner,home
+Organize bathroom cabinet,home
+Clean kitchen counter,home
+Organize fridge contents,home
+Wash shoes,home
+Clean vacuum filter,home
+Rearrange living room,home
+Organize home documents,home
+Prepare grocery list,home
+Prepare weekly report,work
+Attend project sync meeting,work
+Prepare deployment checklist,work
+Fix broken UI button,work
+Improve error handling,work
+Update API documentation,work
+Optimize frontend assets,work
+Test payment integration,work
+Fix failing unit tests,work
+Prepare project demo,work
+Go for evening walk,personal
+Practice yoga session,personal
+Plan weekend schedule,personal
+Listen to audiobook,personal
+Write personal goals list,personal
+Declutter phone apps,personal
+Practice time management,personal
+Reflect on daily progress,personal
+Watch inspirational talk,personal
+Prepare for next day,personal
+Review math formulas,study
+Study web security basics,study
+Practice Git commands,study
+Read about Docker containers,study
+Prepare notes on databases,study
+Study Linux commands,study
+Practice writing clean code,study
+Read about CI/CD pipelines,study
+Study microservices architecture,study
+Review programming concepts,study
+Clean desk drawers,home
+Wash reusable bottles,home
+Organize medicine cabinet,home
+Clean bathroom mirror,home
+Rearrange kitchen items,home
+Wash kitchen towels,home
+Clean door frames,home
+Organize storage shelves,home
+Clean trash bins,home
+Prepare home cleaning plan,home
+Prepare weekly task list,work
+Fix broken API endpoint,work
+Update README file,work
+Refactor service logic,work
+Analyze user feedback,work
+Prepare testing checklist,work
+Fix CSS layout issue,work
+Optimize SQL queries,work
+Review system architecture,work
+Prepare release documentation,work
+Practice meditation session,personal
+Organize digital photos,personal
+Write personal reflection,personal
+Plan self-improvement goals,personal
+Take break from screens,personal
+Go for short walk,personal
+Relax with music playlist,personal
+Practice deep breathing,personal
+Reflect on daily tasks,personal
+Prepare personal schedule,personal
