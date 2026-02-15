@@ -4,7 +4,7 @@ __pycache__/
 
 # Віртуальне середовище
 .venv/
-.env/
+.env
 
 # Poetry lock, якщо не хочеш його в репозиторії
 poetry.lock
