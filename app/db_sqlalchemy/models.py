@@ -2,7 +2,14 @@ from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy import Integer, String, Column, Text, Boolean, ForeignKey, UniqueConstraint, text
 from sqlalchemy.types import DateTime, Date
 from sqlalchemy.sql import func
+from pathlib import Path
+
+import sys
+ROOT_DIR = Path(__file__).resolve().parents[0]
+sys.path.insert(0, str(ROOT_DIR))
+print(ROOT_DIR)
 from connect import Base
+
 
 
 

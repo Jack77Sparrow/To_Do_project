@@ -2,8 +2,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-from services.logger_config import logger
-import traceback
+
+
 
 from dotenv import load_dotenv
 import os

@@ -8,7 +8,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN chmod +x /code/entrypoint.sh
 
 EXPOSE 8000
 

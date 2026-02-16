@@ -9,20 +9,21 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: todo_db
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
 
   app:
     build: .
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
     depends_on:
       - db
     environment:
       DATABASE_URL: postgresql+psycopg2://user:password@db:5432/todo_db
     ports:
       - "8000:8000"
-    entrypoint: ["/bin/bash", "/code/entrypoint.sh"]
+
 
 volumes:
   pgdata:
