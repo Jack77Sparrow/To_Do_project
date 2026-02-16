@@ -3,18 +3,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 
-
-
-from dotenv import load_dotenv
-import os
-load_dotenv()
-
-postgre_login = os.getenv("POSTGRES_USER")
-postgre_password = os.getenv("POSTGRES_PASSWORD")
-
-engine = create_engine(f'postgresql+psycopg2://{postgre_login}:{postgre_password}@db:5432/task_manager')
+engine = create_engine(f'postgresql+psycopg2://user:password@db:5432/todo_db')
 SessionLocal = sessionmaker(autoflush=False, autocommit=False, bind=engine)
 Base = declarative_base()
+
+
 
 
 

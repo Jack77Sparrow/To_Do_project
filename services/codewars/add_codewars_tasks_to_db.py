@@ -10,7 +10,7 @@ ROOT_PATH = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT_PATH))
 print(ROOT_PATH)
 from app.db_sqlalchemy.models import CodewarsCompleted, User, Task, TaskTimeLogs
-from app.db_sqlalchemy.connect import db_session
+from UI.web_interface.WEB_interface import db_session
 from dateutil.parser import isoparse
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy import update, func
@@ -81,7 +81,7 @@ def save_completed_task_to_db(user_id: int):
         if newest_completed_at:
             query.codewars_last_completed = newest_completed_at
             if last_completed != newest_completed_at:
-                update_streak_services(user_id)
+                update_streak_services(session, user_id)
                 logger.info(f"Update codewars_last_completed for {query.codewars_username}")
             else:
                 logger.info(f"Nowthing new")

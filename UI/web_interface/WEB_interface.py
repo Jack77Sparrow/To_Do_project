@@ -1,10 +1,11 @@
 
 from fastapi.responses import RedirectResponse, JSONResponse, FileResponse
-from fastapi import FastAPI, Query, Depends
+from fastapi import FastAPI, Query, Depends, Request
 from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 from fastapi import Form
 from fastapi.exceptions import HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import json
 from datetime import datetime, date
 from typing import Optional, List
@@ -12,7 +13,7 @@ from sqlalchemy.orm import Session
 from app.db_sqlalchemy.connect import SessionLocal, Base, engine
 import traceback
 from services.logger_config import logger
-
+from pathlib import Path
 from services.tasks import (get_all_tasks_service, 
                             get_today_tasks_service, 
                             get_task_by_id, 
@@ -31,6 +32,17 @@ app.mount("/static", StaticFiles(directory="UI/static"), name="static")
 
 Base.metadata.create_all(bind=engine)
 
+origins = [
+    "*",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"], 
+    allow_headers=["*"],
+)
 
 def db_session():
     session = SessionLocal()
@@ -105,6 +117,11 @@ class TaskPageResponse(BaseModel):
     total: int
     page: int
     limit: int
+
+
+
+
+
 
 @app.get("/")
 def read_root():

@@ -5,15 +5,14 @@ import sys
 ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_DIR))
 
-import traceback
+
 import datetime
 from app.model.my_models import model, difficulty_model
 from app.db_sqlalchemy.models import Task, TaskTimeLogs, User
-from app.db_sqlalchemy.connect import db_session
 from sqlalchemy import update, func, desc, case, select
 from sqlalchemy.exc import NoResultFound
 from services.logger_config import logger
-from functools import wraps
+
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_DIR))

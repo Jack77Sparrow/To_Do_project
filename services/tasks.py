@@ -12,7 +12,7 @@ from repository.tasks import (select_today_tasks,
                               update_streak
                               )
 from datetime import datetime
-from app.db_sqlalchemy.connect import db_session
+
 
 
 
@@ -90,5 +90,5 @@ def select_user_data_services(db):
     return dict_data
 
 
-def update_streak_services(user_id: int = 1):
-    return update_streak(next(db_session()), user_id=user_id)
+def update_streak_services(db, user_id: int = 1):
+    return update_streak(db, user_id=user_id)
