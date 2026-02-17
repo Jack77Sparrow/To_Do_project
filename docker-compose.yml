@@ -28,7 +28,7 @@ services:
     build: .
     container_name: cron
     volumes:
-      - .:/app  # щоб всі твої скрипти були доступні
+      - .:/app
     working_dir: /app
     command: >
       sh -c "
