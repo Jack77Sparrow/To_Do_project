@@ -15,10 +15,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Копіюємо весь проект
 COPY . .
 
-# Копіюємо crontab файл у контейнер (створи його як mycron у проекті)
-COPY mycron /etc/cron.d/mycron
-RUN chmod 0644 /etc/cron.d/mycron
-RUN crontab /etc/cron.d/mycron
+
+RUN which cron
+RUN which crontab
 
 # Виставляємо порт для uvicorn
 EXPOSE 8000

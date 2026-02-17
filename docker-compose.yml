@@ -24,6 +24,23 @@ services:
     ports:
       - "8000:8000"
 
+  cron:
+    build: .
+    container_name: cron
+    volumes:
+      - .:/app  # щоб всі твої скрипти були доступні
+    working_dir: /app
+    command: >
+      sh -c "
+      echo '*/10 * * * * python /app/services/codewars/add_codewars_tasks_to_db.py >> /app/cron_add.log 2>&1' > /etc/cron.d/mycron &&
+      echo '0 12 * * * python /app/services/codewars/daily_task.py >> /app/cron_daily.log 2>&1' >> /etc/cron.d/mycron &&
+      echo '0 0 * * * python /app/services/codewars/update_overdue.py >> /app/cron_overdue.log 2>&1' >> /etc/cron.d/mycron &&
+      chmod 0644 /etc/cron.d/mycron &&
+      crontab /etc/cron.d/mycron &&
+      cron -f
+      "
+    depends_on:
+      - db
 
 volumes:
   db_data:
