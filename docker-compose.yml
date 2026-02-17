@@ -26,6 +26,9 @@ services:
 
   cron:
     image: python:3.12-slim
+    build: 
+      context: .
+      dockerfile: Dockerfile.cron
     container_name: cron
     volumes:
       - .:/app
