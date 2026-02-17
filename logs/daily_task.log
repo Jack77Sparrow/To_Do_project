@@ -373,3 +373,67 @@ FileNotFoundError: [Errno 2] No such file or directory: 'auth.json'
 2026-02-15 14:40:04,728 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
 2026-02-15 14:50:04,871 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Nowthing new
 2026-02-15 15:39:01,844 - INFO - daily_task.<module>: CRON RUN: 2026-02-15 15:39:01.844659
+2026-02-16 21:54:19,571 - INFO - daily_task.<module>: CRON RUN: 2026-02-16 21:54:19.571965
+2026-02-16 22:00:09,350 - INFO - daily_task.<module>: CRON RUN: 2026-02-16 22:00:09.350334
+2026-02-16 22:01:04,997 - INFO - daily_task.<module>: CRON RUN: 2026-02-16 22:01:04.997687
+2026-02-16 22:01:43,753 - INFO - daily_task.<module>: CRON RUN: 2026-02-16 22:01:43.753188
+2026-02-16 22:01:57,481 - INFO - daily_task.<module>: CRON RUN: 2026-02-16 22:01:57.481944
+2026-02-16 22:03:16,403 - INFO - daily_task.<module>: CRON RUN: 2026-02-16 22:03:16.403851
+2026-02-16 22:04:51,029 - INFO - daily_task.<module>: CRON RUN: 2026-02-16 22:04:51.029192
+2026-02-16 22:07:47,584 - INFO - daily_task.<module>: CRON RUN: 2026-02-16 22:07:47.584671
+2026-02-17 18:33:43,385 - INFO - tasks.update_streak: streak for USER - 1 equal 0
+2026-02-17 18:33:43,399 - INFO - add_codewars_tasks_to_db.save_completed_task_to_db: Update codewars_last_completed for test_codewars_username
+2026-02-17 18:38:18,800 - ERROR - add_codewars_tasks_to_db.save_completed_task_to_db: Exceprtion with keys Traceback (most recent call last):
+  File "/Users/drake/Documents/Projects/To_Do_List/services/codewars/add_codewars_tasks_to_db.py", line 60, in save_completed_task_to_db
+    for kata in playload['data']:
+                ~~~~~~~~^^^^^^^^
+KeyError: 'data'
+
+2026-02-17 18:39:48,084 - ERROR - add_codewars_tasks_to_db.save_completed_task_to_db: Exceprtion with keys Traceback (most recent call last):
+  File "/Users/drake/Documents/Projects/To_Do_List/services/codewars/add_codewars_tasks_to_db.py", line 60, in save_completed_task_to_db
+    for kata in playload['data']:
+                ~~~~~~~~^^^^^^^^
+KeyError: 'data'
+
+2026-02-17 18:40:05,338 - ERROR - add_codewars_tasks_to_db.save_completed_task_to_db: Exceprtion with keys Traceback (most recent call last):
+  File "/Users/drake/Documents/Projects/To_Do_List/services/codewars/add_codewars_tasks_to_db.py", line 60, in save_completed_task_to_db
+    for kata in playload['data']:
+                ~~~~~~~~^^^^^^^^
+KeyError: 'data'
+
+2026-02-17 18:40:44,086 - ERROR - add_codewars_tasks_to_db.save_completed_task_to_db: Exceprtion with keys Traceback (most recent call last):
+  File "/Users/drake/Documents/Projects/To_Do_List/services/codewars/add_codewars_tasks_to_db.py", line 58, in save_completed_task_to_db
+    for kata in playload['data']:
+                ~~~~~~~~^^^^^^^^
+KeyError: 'data'
+
+2026-02-17 18:40:49,157 - ERROR - add_codewars_tasks_to_db.save_completed_task_to_db: Exceprtion with keys
+ Traceback (most recent call last):
+  File "/Users/drake/Documents/Projects/To_Do_List/services/codewars/add_codewars_tasks_to_db.py", line 58, in save_completed_task_to_db
+    for kata in playload['data']:
+                ~~~~~~~~^^^^^^^^
+KeyError: 'data'
+
+2026-02-17 18:42:40,733 - ERROR - add_codewars_tasks_to_db.save_completed_task_to_db: Exceprtion with keys
+ Traceback (most recent call last):
+  File "/Users/drake/Documents/Projects/To_Do_List/services/codewars/add_codewars_tasks_to_db.py", line 58, in save_completed_task_to_db
+    for kata in playload['data']:
+                ~~~~~~~~^^^^^^^^
+KeyError: 'data'
+
+2026-02-17 18:43:39,878 - ERROR - add_codewars_tasks_to_db.save_completed_task_to_db: Exceprtion with keys
+ Traceback (most recent call last):
+  File "/Users/drake/Documents/Projects/To_Do_List/services/codewars/add_codewars_tasks_to_db.py", line 58, in save_completed_task_to_db
+    for kata in playload['data']:
+                ~~~~~~~~^^^^^^^^
+KeyError: 'data'
+
+2026-02-17 18:43:49,758 - INFO - daily_task.create_task_codewars: Task succesfully created!
+2026-02-17 18:43:49,759 - INFO - daily_task.<module>: CRON RUN: 2026-02-17 18:43:49.759252
+2026-02-17 18:50:05,752 - ERROR - add_codewars_tasks_to_db.save_completed_task_to_db: Exceprtion with keys
+ Traceback (most recent call last):
+  File "/Users/drake/Documents/Projects/To_Do_List/services/codewars/add_codewars_tasks_to_db.py", line 58, in save_completed_task_to_db
+    for kata in playload['data']:
+                ~~~~~~~~^^^^^^^^
+KeyError: 'data'
+

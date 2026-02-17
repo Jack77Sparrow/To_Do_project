@@ -72,3 +72,4 @@ def get_random_kata():
         logger.error(f"Exception occured:\n {traceback.format_exc()}")
 
 
+

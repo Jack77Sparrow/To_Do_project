@@ -6,7 +6,7 @@ Create Date: 2026-02-16 20:25:47.003385
 
 """
 from typing import Sequence, Union
-
+from sqlalchemy import table, column, String, Integer
 from alembic import op
 import sqlalchemy as sa
 
@@ -36,6 +36,7 @@ def upgrade() -> None:
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('username')
     )
+
     op.create_table('codewars_completed',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),

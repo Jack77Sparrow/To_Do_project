@@ -1,9 +1,7 @@
 """this code runnign by cron every 10 minutes"""
 
 
-
 import requests
-import pprint
 from pathlib import Path
 import sys
 ROOT_PATH = Path(__file__).resolve().parents[2]
@@ -26,7 +24,7 @@ from services.tasks import update_streak_services
 session = next(db_session())
 
 
-def save_completed_task_to_db(user_id: int):
+def save_completed_task_to_db(user_id: int = 1):
     """
     check and update last completed for user
     
@@ -43,39 +41,46 @@ def save_completed_task_to_db(user_id: int):
         page = 0
         if query.codewars_username is not None:
             url = f'https://www.codewars.com/api/v1/users/{query.codewars_username}/code-challenges/completed?page={page}'
+            # url = f'https://www.codewars.com/api/v1/users/MaksymParfeniuk/code-challenges/completed?page={page}'
         else:
             logger.info(f"{query.username} is`t have a codewars_username")
         while True:
+            try:
+                request = requests.get(url)
+            except requests.exceptions.HTTPError:
+                logger.info(f"No such codewars username {query.codewars_username}")
+                return
 
-            request = requests.get(url)
-
-            request.raise_for_status()
+            # request.raise_for_status()
             playload = request.json()
             
-
-            for kata in playload['data']:
-                completed_at = isoparse(kata["completedAt"])
-                # if user last_completed greater than kata completed_at do nothinng
-                if last_completed and completed_at <= last_completed:
-                    continue
-                
-                stmt = (insert(CodewarsCompleted).values(user_id=1,
-                                                title=kata.get("name"), 
-                                                slug=kata.get("slug"), 
-                                                completed_at=isoparse(kata.get("completedAt")), 
-                                                code_wars_task_id=kata.get("id"),).on_conflict_do_nothing(
-                        index_elements=["user_id", "code_wars_task_id"]
-                    ))
+            try:
+                for kata in playload['data']:
+                    completed_at = isoparse(kata["completedAt"])
+                    # if user last_completed greater than kata completed_at do nothinng
+                    if last_completed and completed_at <= last_completed:
+                        continue
                     
-                session.execute(stmt)
-                # if kata completed_at greater than user last_completed reassign last_completed for user by completed_at
-                if not newest_completed_at or completed_at > newest_completed_at:
-                    newest_completed_at = completed_at
+                    stmt = (insert(CodewarsCompleted).values(user_id=1,
+                                                    title=kata.get("name"), 
+                                                    slug=kata.get("slug"), 
+                                                    completed_at=isoparse(kata.get("completedAt")), 
+                                                    code_wars_task_id=kata.get("id"),).on_conflict_do_nothing(
+                            index_elements=["user_id", "code_wars_task_id"]
+                        ))
+                        
+                    session.execute(stmt)
+                    # if kata completed_at greater than user last_completed reassign last_completed for user by completed_at
+                    if not newest_completed_at or completed_at > newest_completed_at:
+                        newest_completed_at = completed_at
 
 
-            page+=1
-            if page >= playload['totalPages']:
-                break
+                page+=1
+                if page >= playload['totalPages']:
+                    break
+            except KeyError:
+                logger.error(f"Exceprtion with keys\n {traceback.format_exc()}")
+                return
 
         # updating user last_completed 
         if newest_completed_at:
@@ -94,7 +99,7 @@ def save_completed_task_to_db(user_id: int):
     finally:
         session.close()
 
-def check_codewars_task_complete(user_id: int):
+def check_codewars_task_complete(user_id: int = 1):
     """
     Update all pending codewars tasks for user to 'done'
     if they are in the CodewarsCompleted table
@@ -104,7 +109,7 @@ def check_codewars_task_complete(user_id: int):
         codewars_completed_tasks = session.query(CodewarsCompleted.title).where(CodewarsCompleted.user_id == user_id).all()
 
         completed_tasks = {tasks for (tasks, ) in codewars_completed_tasks}
-        print(completed_tasks)
+
 
         stmt = update(Task).where(Task.user_id == user_id, 
                                 Task.status == 'pending', 
@@ -129,6 +134,6 @@ def check_codewars_task_complete(user_id: int):
         session.close()
     
 if __name__ == "__main__":
-    pprint.pprint(save_completed_task_to_db(1))
-    check_codewars_task_complete(1)
+    save_completed_task_to_db()
+    check_codewars_task_complete()
     print("Update codewars completed table", flush=True)

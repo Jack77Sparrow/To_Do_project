@@ -12,17 +12,21 @@ from random_kata import get_random_kata
 from app.db_sqlalchemy.models import User, Task
 from services.logger_config import logger
 import traceback
-from app.db_sqlalchemy.connect import db_session
+from UI.web_interface.WEB_interface import db_session
 
 
 session = next(db_session())
 
-def create_task_codewars(user_id):
+def create_task_codewars(user_id: int = 1):
     """
     Everyday adding random codewars kata to table 'tasks'
     """
     try:
         user = session.get(User, user_id)
+        
+        users = session.query(User).all()
+        print(users)
+
         # evaluating date for task add 1 day
         tomorrow = datetime.date.today() + datetime.timedelta(days=1)
 
@@ -59,6 +63,6 @@ def create_task_codewars(user_id):
         session.close()
 
 if __name__ == "__main__":
-    create_task_codewars(user_id=1)
+    create_task_codewars()
     logger.info(f"CRON RUN: {datetime.datetime.now()}")
         

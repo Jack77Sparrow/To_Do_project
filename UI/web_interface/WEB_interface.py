@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session
 from app.db_sqlalchemy.connect import SessionLocal, Base, engine
 import traceback
 from services.logger_config import logger
-from pathlib import Path
+
 from services.tasks import (get_all_tasks_service, 
                             get_today_tasks_service, 
                             get_task_by_id, 
@@ -55,9 +55,6 @@ def db_session():
         raise
     finally:
         session.close()
-
-
-
 
 
 
