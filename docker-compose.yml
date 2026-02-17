@@ -24,24 +24,6 @@ services:
     ports:
       - "8000:8000"
 
-  cron:
-    image: python:3.12-slim
-    build: 
-      context: .
-      dockerfile: Dockerfile.cron
-    container_name: cron
-    volumes:
-      - .:/app
-    working_dir: /app
-    command: >
-      sh -c "
-      echo '*/10 * * * * python /app/services/codewars/add_codewars_tasks_to_db.py >> /app/cron_add.log 2>&1
-      0 12 * * * python /app/services/codewars/add_codewars_tasks_to_db.py >> /app/cron_add.log 2>&1
-      0 0 * * * python /app/services/codewars/add_codewars_tasks_to_db.py >> /app/cron_add.log 2>&1
-      0 10 * * * python /app/services/daily_task.py >> /app/cron_daily.log 2>&1
-      0 11 * * * python /app/services/update_overdue.py >> /app/cron_overdue.log 2>&1' > mycron && crontab mycron && cron -f"
-    depends_on:
-      - db
 
 volumes:
   db_data:

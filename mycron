@@ -1,0 +1,6 @@
+# Скрипти з логами
+*/10 * * * * root python /app/services/codewars/add_codewars_tasks_to_db.py >> /app/cron_add.log 2>&1
+0 12 * * * root python /app/services/codewars/add_codewars_tasks_to_db.py >> /app/cron_add.log 2>&1
+0 0 * * * root python /app/services/codewars/add_codewars_tasks_to_db.py >> /app/cron_add.log 2>&1
+0 10 * * * root python /app/services/daily_task.py >> /app/cron_daily.log 2>&1
+0 11 * * * root python /app/services/update_overdue.py >> /app/cron_overdue.log 2>&1
